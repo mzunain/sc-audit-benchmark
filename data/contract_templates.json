@@ -1,0 +1,39 @@
+{
+  "templates": [
+    {
+      "id": "TOKEN-BASIC",
+      "name": "Basic ERC20-like Token",
+      "description": "Simple token with mint, transfer, approve",
+      "loc_range": [40, 80],
+      "clean_code": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\ncontract Token {\n    string public name;\n    uint256 public totalSupply;\n    mapping(address => uint256) public balanceOf;\n    mapping(address => mapping(address => uint256)) public allowance;\n    \n    constructor(string memory _name, uint256 _supply) {\n        name = _name;\n        totalSupply = _supply;\n        balanceOf[msg.sender] = _supply;\n    }\n    \n    function transfer(address to, uint256 amount) public returns (bool) {\n        require(balanceOf[msg.sender] >= amount, \"Insufficient\");\n        balanceOf[msg.sender] -= amount;\n        balanceOf[to] += amount;\n        return true;\n    }\n}"
+    },
+    {
+      "id": "VAULT-DEPOSIT",
+      "name": "Deposit/Withdraw Vault",
+      "description": "User deposits ETH, can withdraw later",
+      "loc_range": [50, 100],
+      "clean_code": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\ncontract Vault {\n    mapping(address => uint256) public balances;\n    address public owner;\n    \n    constructor() {\n        owner = msg.sender;\n    }\n    \n    function deposit() public payable {\n        balances[msg.sender] += msg.value;\n    }\n    \n    function withdraw(uint256 amount) public {\n        require(balances[msg.sender] >= amount, \"Insufficient\");\n        balances[msg.sender] -= amount;\n        (bool success, ) = msg.sender.call{value: amount}(\"\");\n        require(success, \"Transfer failed\");\n    }\n}"
+    },
+    {
+      "id": "MULTISIG-BASIC",
+      "name": "Multi-signature Wallet",
+      "description": "Requires N-of-M signatures to execute",
+      "loc_range": [80, 150],
+      "clean_code": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\ncontract Multisig {\n    address[] public owners;\n    uint256 public required;\n    mapping(bytes32 => uint256) public confirmations;\n    mapping(bytes32 => mapping(address => bool)) public confirmed;\n    \n    modifier onlyOwner() {\n        bool isOwner = false;\n        for (uint i = 0; i < owners.length; i++) {\n            if (owners[i] == msg.sender) { isOwner = true; break; }\n        }\n        require(isOwner, \"Not owner\");\n        _;\n    }\n    \n    constructor(address[] memory _owners, uint256 _required) {\n        owners = _owners;\n        required = _required;\n    }\n    \n    function execute(address target, uint256 value, bytes memory data) public onlyOwner {\n        bytes32 txHash = keccak256(abi.encode(target, value, data));\n        require(!confirmed[txHash][msg.sender], \"Already confirmed\");\n        confirmed[txHash][msg.sender] = true;\n        confirmations[txHash]++;\n        \n        if (confirmations[txHash] >= required) {\n            (bool success, ) = target.call{value: value}(data);\n            require(success, \"Tx failed\");\n        }\n    }\n}"
+    },
+    {
+      "id": "AUCTION-SIMPLE",
+      "name": "Simple Auction",
+      "description": "Highest bid wins, others refunded",
+      "loc_range": [60, 100],
+      "clean_code": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\ncontract Auction {\n    address public highestBidder;\n    uint256 public highestBid;\n    address public seller;\n    uint256 public endTime;\n    mapping(address => uint256) public refunds;\n    \n    constructor(uint256 duration) {\n        seller = msg.sender;\n        endTime = block.timestamp + duration;\n    }\n    \n    function bid() public payable {\n        require(block.timestamp < endTime, \"Auction ended\");\n        require(msg.value > highestBid, \"Bid too low\");\n        \n        if (highestBidder != address(0)) {\n            refunds[highestBidder] += highestBid;\n        }\n        \n        highestBidder = msg.sender;\n        highestBid = msg.value;\n    }\n    \n    function withdrawRefund() public {\n        uint256 amount = refunds[msg.sender];\n        refunds[msg.sender] = 0;\n        payable(msg.sender).transfer(amount);\n    }\n}"
+    },
+    {
+      "id": "STAKING-REWARDS",
+      "name": "Staking with Rewards",
+      "description": "Users stake tokens, earn rewards over time",
+      "loc_range": [70, 120],
+      "clean_code": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\ncontract Staking {\n    mapping(address => uint256) public staked;\n    mapping(address => uint256) public lastClaimTime;\n    uint256 public rewardRate = 100;\n    address public owner;\n    \n    constructor() {\n        owner = msg.sender;\n    }\n    \n    function stake(uint256 amount) public {\n        if (staked[msg.sender] > 0) {\n            uint256 reward = calculateReward(msg.sender);\n            staked[msg.sender] += reward;\n        }\n        staked[msg.sender] += amount;\n        lastClaimTime[msg.sender] = block.timestamp;\n    }\n    \n    function calculateReward(address user) public view returns (uint256) {\n        uint256 timeStaked = block.timestamp - lastClaimTime[user];\n        return staked[user] * rewardRate * timeStaked / 1e18;\n    }\n}"
+    }
+  ]
+}
