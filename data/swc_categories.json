@@ -1,0 +1,77 @@
+{
+  "version": "1.0",
+  "categories": [
+    {
+      "id": "SWC-107",
+      "name": "Reentrancy",
+      "severity_default": "High",
+      "description": "External call before state update allows recursive entry",
+      "example_pattern": "withdraw() calls .call{value: amount}() before setting balance = 0",
+      "real_world_exploit": "DAO Hack (2016), $60M loss",
+      "fix_pattern": "Use checks-effects-interactions or ReentrancyGuard"
+    },
+    {
+      "id": "SWC-101",
+      "name": "Integer Overflow/Underflow",
+      "severity_default": "High",
+      "description": "Arithmetic operations exceed type bounds (pre-0.8.0 Solidity)",
+      "example_pattern": "uint256 multiplication without SafeMath",
+      "real_world_exploit": "BeautyChain (BEC) Token, $900M wiped",
+      "fix_pattern": "Use Solidity 0.8.0+ or SafeMath library"
+    },
+    {
+      "id": "SWC-104",
+      "name": "Unchecked Call Return Value",
+      "severity_default": "Medium",
+      "description": "External call return value not checked",
+      "example_pattern": "address.send() or .call() without checking success",
+      "real_world_exploit": "King of the Ether Throne",
+      "fix_pattern": "require(success, ...) on all external calls"
+    },
+    {
+      "id": "SWC-105",
+      "name": "Unprotected Ether Withdrawal",
+      "severity_default": "Critical",
+      "description": "Withdrawal function lacks access control",
+      "example_pattern": "withdraw() function without onlyOwner or auth check",
+      "real_world_exploit": "Parity Multisig Wallet, $30M",
+      "fix_pattern": "Add access control modifiers"
+    },
+    {
+      "id": "SWC-106",
+      "name": "Unprotected SELFDESTRUCT",
+      "severity_default": "Critical",
+      "description": "selfdestruct callable by anyone",
+      "example_pattern": "function kill() public { selfdestruct(...); }",
+      "real_world_exploit": "Parity Wallet Library, $280M frozen",
+      "fix_pattern": "Restrict to owner or remove entirely"
+    },
+    {
+      "id": "SWC-112",
+      "name": "Delegatecall to Untrusted Callee",
+      "severity_default": "Critical",
+      "description": "delegatecall to user-controlled address allows code injection",
+      "example_pattern": "target.delegatecall(data) where target is parameter",
+      "real_world_exploit": "Parity Wallet (multiple incidents)",
+      "fix_pattern": "Use libraries with fixed addresses only"
+    },
+    {
+      "id": "SWC-114",
+      "name": "Transaction Order Dependence",
+      "severity_default": "Medium",
+      "description": "Logic depends on transaction order, enabling front-running",
+      "example_pattern": "Approval race condition in ERC20",
+      "real_world_exploit": "Bancor frontrunning incidents",
+      "fix_pattern": "Use commit-reveal or sequencer protections"
+    },
+    {
+      "id": "SWC-128",
+      "name": "DoS with Block Gas Limit",
+      "severity_default": "Medium",
+      "description": "Unbounded loop can exceed gas limit, locking funds",
+      "example_pattern": "for loop over dynamic array of unbounded size",
+      "real_world_exploit": "GovernMental Ponzi",
+      "fix_pattern": "Pull-payment pattern, pagination"
+    }
+  ]
+}
