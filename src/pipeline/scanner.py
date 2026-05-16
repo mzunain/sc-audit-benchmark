@@ -77,7 +77,7 @@ class VulnerabilityScanner:
             model=scanner_model,
             prompt=prompt,
             system=SCANNER_SYSTEM_PROMPT,
-            max_tokens=1500,
+            max_tokens=4000,
         )
 
         report = self._extract_json(response.text)
