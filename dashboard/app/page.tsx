@@ -55,7 +55,7 @@ export default function Leaderboard() {
   const [totalContracts, setTotalContracts] = useState<number>(0);
 
   useEffect(() => {
-    fetch("/api/leaderboard")
+    fetch("/data/presentation.json")
       .then((r) => r.json())
       .then((d) => {
         setData(d.summary_rows || []);
