@@ -26,7 +26,7 @@ export default function Breakdown() {
   const [data, setData] = useState<BreakdownData | null>(null);
 
   useEffect(() => {
-    fetch("/api/breakdown")
+    fetch("/data/breakdown.json")
       .then((r) => r.json())
       .then(setData)
       .catch(() => {});
