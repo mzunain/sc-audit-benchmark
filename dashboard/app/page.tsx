@@ -80,6 +80,7 @@ export default function Leaderboard() {
         <div className="flex items-baseline justify-between mb-1">
           <h1 className="text-3xl font-bold">Solidity Vulnerability Benchmark</h1>
           <div className="flex gap-3 text-sm">
+            <a href="/analysis" className="text-gray-700 hover:underline">Why these results →</a>
             <a href="/breakdown" className="text-gray-700 hover:underline">Per-vuln breakdown →</a>
             <a href="/playground" className="text-gray-700 hover:underline">Playground →</a>
           </div>

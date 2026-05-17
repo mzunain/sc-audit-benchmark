@@ -7,6 +7,7 @@ contract vulnerabilities. Built for SC Audit Studio at That Crypto Hackathon
 **Live demo:** [sc-audit-benchmark.vercel.app](https://sc-audit-benchmark.vercel.app/)
 
 - [Leaderboard](https://sc-audit-benchmark.vercel.app/) — cost-adjusted and pure-quality views
+- [Why these results](https://sc-audit-benchmark.vercel.app/analysis) — per-SWC rationale: which models passed, which failed, and the architectural reason behind the split
 - [Per-vuln breakdown](https://sc-audit-benchmark.vercel.app/breakdown) — heatmap of detection rate by model × SWC class
 - [Playground](https://sc-audit-benchmark.vercel.app/playground) — paste a Solidity contract, pick a model, get a structured scan report
 

@@ -43,8 +43,9 @@ export default function Breakdown() {
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-6xl mx-auto">
-        <div className="flex items-center mb-2">
+        <div className="flex items-center justify-between mb-2">
           <a href="/" className="text-sm text-gray-500 hover:underline">← Leaderboard</a>
+          <a href="/analysis" className="text-sm text-gray-700 hover:underline">Why these results →</a>
         </div>
         <h1 className="text-3xl font-bold mb-2">Per-vulnerability breakdown</h1>
         <p className="text-gray-600 mb-8">
