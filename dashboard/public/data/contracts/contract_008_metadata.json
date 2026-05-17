@@ -1,0 +1,11 @@
+{
+  "contract_id": "contract_008",
+  "template_id": "MULTISIG-BASIC",
+  "vulnerability": {
+    "swc_id": "SWC-128",
+    "name": "DoS with Block Gas Limit",
+    "severity": "Medium"
+  },
+  "generator_model": "nim:qwen/qwen3-coder-480b-a35b-instruct",
+  "generation_cost_usd": 0.0003075
+}

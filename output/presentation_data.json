@@ -1,0 +1,42 @@
+{
+  "title": "Generative Solidity Vulnerability Benchmark",
+  "total_contracts": 15,
+  "models_tested": [
+    "nim:qwen/qwen3-coder-480b-a35b-instruct",
+    "nim:minimaxai/minimax-m2.7",
+    "nim:stepfun-ai/step-3.5-flash"
+  ],
+  "summary_rows": [
+    {
+      "model": "nim:qwen/qwen3-coder-480b-a35b-instruct",
+      "detection": 71.4,
+      "quality": 57.5,
+      "cost_usd": 0.0034,
+      "value": 17041.6
+    },
+    {
+      "model": "nim:minimaxai/minimax-m2.7",
+      "detection": 64.3,
+      "quality": 44.6,
+      "cost_usd": 0.0237,
+      "value": 1882.4
+    },
+    {
+      "model": "nim:stepfun-ai/step-3.5-flash",
+      "detection": 18.2,
+      "quality": 18.2,
+      "cost_usd": 0.0357,
+      "value": 508.8
+    }
+  ],
+  "winners": {
+    "highest_quality": {
+      "model": "nim:qwen/qwen3-coder-480b-a35b-instruct",
+      "score": 57.5
+    },
+    "best_value": {
+      "model": "nim:qwen/qwen3-coder-480b-a35b-instruct",
+      "score": 17041.6
+    }
+  }
+}

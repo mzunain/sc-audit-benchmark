@@ -2,12 +2,11 @@ import { NextResponse } from "next/server";
 import { readFileSync, readdirSync } from "fs";
 import { join } from "path";
 
-const OUTPUT_DIR = join(process.cwd(), "..", "output", "judge_scores");
-const CONTRACTS_DIR = join(process.cwd(), "..", "data", "generated_contracts");
+const JUDGMENTS_DIR = join(process.cwd(), "public", "data", "judgments");
+const CONTRACTS_DIR = join(process.cwd(), "public", "data", "contracts");
 
 export async function GET() {
   try {
-    // Build contract_id -> swc_id map from generator metadata
     const groundTruth: Record<string, { swc_id: string; name: string }> = {};
     for (const f of readdirSync(CONTRACTS_DIR)) {
       if (!f.endsWith("_metadata.json")) continue;
@@ -18,12 +17,11 @@ export async function GET() {
       };
     }
 
-    // For each model, aggregate per-SWC detection rates
     const breakdown: Record<string, Record<string, { found: number; total: number }>> = {};
 
-    for (const f of readdirSync(OUTPUT_DIR)) {
+    for (const f of readdirSync(JUDGMENTS_DIR)) {
       if (!f.endsWith("_judgments.json")) continue;
-      const data = JSON.parse(readFileSync(join(OUTPUT_DIR, f), "utf-8"));
+      const data = JSON.parse(readFileSync(join(JUDGMENTS_DIR, f), "utf-8"));
       const model = data.model;
       breakdown[model] = {};
 
@@ -37,7 +35,6 @@ export async function GET() {
       }
     }
 
-    // Build sorted SWC list (union across models)
     const swcSet = new Set<string>();
     for (const m of Object.values(breakdown)) {
       for (const s of Object.keys(m)) swcSet.add(s);

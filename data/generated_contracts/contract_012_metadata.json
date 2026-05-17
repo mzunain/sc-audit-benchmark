@@ -1,0 +1,11 @@
+{
+  "contract_id": "contract_012",
+  "template_id": "VAULT-DEPOSIT",
+  "vulnerability": {
+    "swc_id": "SWC-105",
+    "name": "Unprotected Ether Withdrawal",
+    "severity": "Critical"
+  },
+  "generator_model": "nim:qwen/qwen3-coder-480b-a35b-instruct",
+  "generation_cost_usd": 0.00018119999999999999
+}

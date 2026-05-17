@@ -1,0 +1,229 @@
+{
+  "model": "nim:qwen/qwen3-coder-480b-a35b-instruct",
+  "judgments": [
+    {
+      "contract_id": "contract_001",
+      "scanner_model": "nim:qwen/qwen3-coder-480b-a35b-instruct",
+      "judgment": {
+        "found_correct_vuln": true,
+        "swc_id_match": true,
+        "severity_match": "exact",
+        "location_accuracy": "exact",
+        "explanation_quality": 5,
+        "false_positives": 1,
+        "overall_score": 0.8,
+        "judge_notes": "The scanner correctly identified the reentrancy vulnerability in the withdraw function, but also reported a false positive authorization issue.",
+        "judge_cost_usd": 0.0005354499999999999
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_002",
+      "scanner_model": "nim:qwen/qwen3-coder-480b-a35b-instruct",
+      "judgment": {
+        "found_correct_vuln": true,
+        "swc_id_match": true,
+        "severity_match": "exact",
+        "location_accuracy": "exact",
+        "explanation_quality": 5,
+        "false_positives": 0,
+        "overall_score": 1.0,
+        "judge_notes": "The scanner accurately identified the integer overflow vulnerability in the calculateRewards function with correct SWC ID, severity, and location, and provided a clear explanation.",
+        "judge_cost_usd": 0.00047098
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_003",
+      "scanner_model": "nim:qwen/qwen3-coder-480b-a35b-instruct",
+      "judgment": {
+        "found_correct_vuln": false,
+        "swc_id_match": false,
+        "severity_match": "wrong",
+        "location_accuracy": "wrong",
+        "explanation_quality": 2,
+        "false_positives": 2,
+        "overall_score": 0.0,
+        "judge_notes": "The scanner failed to identify the actual vulnerability (SWC-104: Unchecked Call Return Value) and instead reported two incorrect vulnerabilities (SWC-107: Reentrancy and SWC-113: DoS with Block Gas Limit).",
+        "judge_cost_usd": 0.0006090999999999999
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_004",
+      "scanner_model": "nim:qwen/qwen3-coder-480b-a35b-instruct",
+      "judgment": {
+        "found_correct_vuln": true,
+        "swc_id_match": true,
+        "severity_match": "exact",
+        "location_accuracy": "exact",
+        "explanation_quality": 5,
+        "false_positives": 1,
+        "overall_score": 0.8,
+        "judge_notes": "The scanner correctly identified the unprotected ether withdrawal vulnerability in the withdraw and emergencyWithdraw functions, but also reported a false positive for a Large Data Gas DoS vulnerability.",
+        "judge_cost_usd": 0.0006269400000000001
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_005",
+      "scanner_model": "nim:qwen/qwen3-coder-480b-a35b-instruct",
+      "judgment": {
+        "found_correct_vuln": true,
+        "swc_id_match": true,
+        "severity_match": "exact",
+        "location_accuracy": "exact",
+        "explanation_quality": 4,
+        "false_positives": 2,
+        "overall_score": 0.6,
+        "judge_notes": "The scanner correctly identified the unprotected SELFDESTRUCT vulnerability, but also reported two false positives, including a reentrancy issue and an integer overflow vulnerability.",
+        "judge_cost_usd": 0.00058524
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_006",
+      "scanner_model": "nim:qwen/qwen3-coder-480b-a35b-instruct",
+      "judgment": {
+        "found_correct_vuln": true,
+        "swc_id_match": true,
+        "severity_match": "close",
+        "location_accuracy": "exact",
+        "explanation_quality": 5,
+        "false_positives": 0,
+        "overall_score": 0.95,
+        "judge_notes": "The scanner correctly identified the SWC-112 vulnerability and provided an excellent explanation, but rated the severity as High instead of Critical.",
+        "judge_cost_usd": 0.00052838
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_008",
+      "scanner_model": "nim:qwen/qwen3-coder-480b-a35b-instruct",
+      "judgment": {
+        "found_correct_vuln": true,
+        "swc_id_match": false,
+        "severity_match": "wrong",
+        "location_accuracy": "exact",
+        "explanation_quality": 4,
+        "false_positives": 2,
+        "overall_score": 0.4,
+        "judge_notes": "The scanner correctly identified the vulnerability in the processPendingTransactions function but misclassified it as SWC-132 instead of SWC-128 and rated its severity as High instead of Medium.",
+        "judge_cost_usd": 0.00068812
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_009",
+      "scanner_model": "nim:qwen/qwen3-coder-480b-a35b-instruct",
+      "judgment": {
+        "found_correct_vuln": true,
+        "swc_id_match": true,
+        "severity_match": "exact",
+        "location_accuracy": "exact",
+        "explanation_quality": 5,
+        "false_positives": 1,
+        "overall_score": 0.8,
+        "judge_notes": "The scanner correctly identified the reentrancy vulnerability, but also reported a false positive timestamp dependence issue.",
+        "judge_cost_usd": 0.0005271799999999999
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_010",
+      "scanner_model": "nim:qwen/qwen3-coder-480b-a35b-instruct",
+      "judgment": {
+        "found_correct_vuln": true,
+        "swc_id_match": true,
+        "severity_match": "exact",
+        "location_accuracy": "exact",
+        "explanation_quality": 5,
+        "false_positives": 0,
+        "overall_score": 1.0,
+        "judge_notes": "The scanner accurately identified the integer overflow vulnerabilities in the contract, correctly matched the SWC ID, and provided well-reasoned explanations for each vulnerability.",
+        "judge_cost_usd": 0.0006029399999999999
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_011",
+      "scanner_model": "nim:qwen/qwen3-coder-480b-a35b-instruct",
+      "judgment": {
+        "found_correct_vuln": true,
+        "swc_id_match": true,
+        "severity_match": "wrong",
+        "location_accuracy": "exact",
+        "explanation_quality": 4,
+        "false_positives": 1,
+        "overall_score": 0.8,
+        "judge_notes": "The scanner correctly identified the SWC-104 vulnerabilities but incorrectly rated their severity as High instead of Medium and also reported a false positive SWC-130 vulnerability.",
+        "judge_cost_usd": 0.00059743
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_012",
+      "scanner_model": "nim:qwen/qwen3-coder-480b-a35b-instruct",
+      "judgment": {
+        "found_correct_vuln": false,
+        "swc_id_match": false,
+        "severity_match": "wrong",
+        "location_accuracy": "approximate",
+        "explanation_quality": 4,
+        "false_positives": 2,
+        "overall_score": 0.2,
+        "judge_notes": "The scanner incorrectly identified reentrancy vulnerabilities instead of the actual unprotected ether withdrawal vulnerability, and reported false positives.",
+        "judge_cost_usd": 0.00049239
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_013",
+      "scanner_model": "nim:qwen/qwen3-coder-480b-a35b-instruct",
+      "judgment": {
+        "found_correct_vuln": true,
+        "swc_id_match": false,
+        "severity_match": "exact",
+        "location_accuracy": "exact",
+        "explanation_quality": 4,
+        "false_positives": 2,
+        "overall_score": 0.6,
+        "judge_notes": "The scanner correctly identified the unprotected self-destruct vulnerability but incorrectly labeled it as SWC-105 instead of SWC-106 and also reported two false positives.",
+        "judge_cost_usd": 0.0006096199999999998
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_014",
+      "scanner_model": "nim:qwen/qwen3-coder-480b-a35b-instruct",
+      "judgment": {
+        "found_correct_vuln": false,
+        "swc_id_match": false,
+        "severity_match": "wrong",
+        "location_accuracy": "approximate",
+        "explanation_quality": 3,
+        "false_positives": 3,
+        "overall_score": 0.0,
+        "judge_notes": "The scanner failed to identify the Delegatecall to Untrusted Callee vulnerability and instead reported unrelated vulnerabilities with incorrect SWC IDs and severities.",
+        "judge_cost_usd": 0.00057206
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_015",
+      "scanner_model": "nim:qwen/qwen3-coder-480b-a35b-instruct",
+      "judgment": {
+        "found_correct_vuln": false,
+        "swc_id_match": false,
+        "severity_match": "wrong",
+        "location_accuracy": "approximate",
+        "explanation_quality": 3,
+        "false_positives": 4,
+        "overall_score": 0.1,
+        "judge_notes": "The scanner failed to identify the correct vulnerability, incorrectly reported multiple false positives, and provided explanations that were partially relevant but not accurate for the actual vulnerability.",
+        "judge_cost_usd": 0.0006821999999999999
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    }
+  ]
+}

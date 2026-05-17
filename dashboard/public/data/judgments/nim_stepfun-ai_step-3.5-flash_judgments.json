@@ -1,0 +1,181 @@
+{
+  "model": "nim:stepfun-ai/step-3.5-flash",
+  "judgments": [
+    {
+      "contract_id": "contract_001",
+      "scanner_model": "nim:stepfun-ai/step-3.5-flash",
+      "judgment": {
+        "found_correct_vuln": false,
+        "swc_id_match": false,
+        "severity_match": "wrong",
+        "location_accuracy": "missing",
+        "explanation_quality": 1,
+        "false_positives": 0,
+        "overall_score": 0.0,
+        "judge_notes": "The scanner failed to identify the reentrancy vulnerability and reported a parse error, indicating a potential issue with the scanner's ability to analyze the contract.",
+        "judge_cost_usd": 0.00043926999999999996
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_002",
+      "scanner_model": "nim:stepfun-ai/step-3.5-flash",
+      "judgment": {
+        "found_correct_vuln": false,
+        "swc_id_match": false,
+        "severity_match": "wrong",
+        "location_accuracy": "missing",
+        "explanation_quality": 2,
+        "false_positives": 0,
+        "overall_score": 0.0,
+        "judge_notes": "The scanner failed to identify the integer overflow vulnerability in the calculateRewards function and incorrectly concluded the contract is secure.",
+        "judge_cost_usd": 0.00042984
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_003",
+      "scanner_model": "nim:stepfun-ai/step-3.5-flash",
+      "judgment": {
+        "found_correct_vuln": false,
+        "swc_id_match": false,
+        "severity_match": "wrong",
+        "location_accuracy": "missing",
+        "explanation_quality": 1,
+        "false_positives": 0,
+        "overall_score": 0.0,
+        "judge_notes": "The scanner failed to identify the vulnerability and reported a parse error, indicating a failure to properly analyze the contract.",
+        "judge_cost_usd": 0.0004654
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_004",
+      "scanner_model": "nim:stepfun-ai/step-3.5-flash",
+      "judgment": {
+        "found_correct_vuln": false,
+        "swc_id_match": false,
+        "severity_match": "wrong",
+        "location_accuracy": "missing",
+        "explanation_quality": 1,
+        "false_positives": 0,
+        "overall_score": 0.0,
+        "judge_notes": "The scanner failed to identify the known vulnerability and reported a parse error, indicating a failure to properly analyze the contract.",
+        "judge_cost_usd": 0.00050359
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_005",
+      "scanner_model": "nim:stepfun-ai/step-3.5-flash",
+      "judgment": {
+        "found_correct_vuln": true,
+        "swc_id_match": true,
+        "severity_match": "exact",
+        "location_accuracy": "exact",
+        "explanation_quality": 5,
+        "false_positives": 0,
+        "overall_score": 1.0,
+        "judge_notes": "The scanner accurately identified the unprotected selfdestruct vulnerability in the emergencyWithdraw function with correct SWC ID, severity, and location.",
+        "judge_cost_usd": 0.00050104
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_006",
+      "scanner_model": "nim:stepfun-ai/step-3.5-flash",
+      "judgment": {
+        "found_correct_vuln": true,
+        "swc_id_match": true,
+        "severity_match": "exact",
+        "location_accuracy": "exact",
+        "explanation_quality": 5,
+        "false_positives": 0,
+        "overall_score": 1.0,
+        "judge_notes": "The scanner accurately identified the Delegatecall to Untrusted Callee vulnerability with correct SWC ID, severity, and location, and provided a well-reasoned explanation.",
+        "judge_cost_usd": 0.0005398099999999999
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_007",
+      "scanner_model": "nim:stepfun-ai/step-3.5-flash",
+      "judgment": {
+        "found_correct_vuln": false,
+        "swc_id_match": false,
+        "severity_match": "wrong",
+        "location_accuracy": "missing",
+        "explanation_quality": 1,
+        "false_positives": 0,
+        "overall_score": 0.0,
+        "judge_notes": "The scanner failed to identify the known vulnerability and reported a parse error, indicating a failure to properly analyze the contract.",
+        "judge_cost_usd": 0.00047209
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_008",
+      "scanner_model": "nim:stepfun-ai/step-3.5-flash",
+      "judgment": {
+        "found_correct_vuln": false,
+        "swc_id_match": false,
+        "severity_match": "wrong",
+        "location_accuracy": "missing",
+        "explanation_quality": 1,
+        "false_positives": 0,
+        "overall_score": 0.0,
+        "judge_notes": "Scanner failed to identify the vulnerability due to a parse error and did not provide any meaningful results.",
+        "judge_cost_usd": 0.00053524
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_011",
+      "scanner_model": "nim:stepfun-ai/step-3.5-flash",
+      "judgment": {
+        "found_correct_vuln": false,
+        "swc_id_match": false,
+        "severity_match": "wrong",
+        "location_accuracy": "missing",
+        "explanation_quality": 1,
+        "false_positives": 0,
+        "overall_score": 0.0,
+        "judge_notes": "The scanner failed to identify the vulnerability and reported a parse error, indicating a potential issue with the scanner's ability to analyze the contract.",
+        "judge_cost_usd": 0.00047429999999999993
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_013",
+      "scanner_model": "nim:stepfun-ai/step-3.5-flash",
+      "judgment": {
+        "found_correct_vuln": false,
+        "swc_id_match": false,
+        "severity_match": "wrong",
+        "location_accuracy": "missing",
+        "explanation_quality": 1,
+        "false_positives": 0,
+        "overall_score": 0.0,
+        "judge_notes": "The scanner failed to identify the unprotected SELFDESTRUCT vulnerability and reported a parse error, indicating a failure to properly analyze the contract.",
+        "judge_cost_usd": 0.00047291999999999994
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_014",
+      "scanner_model": "nim:stepfun-ai/step-3.5-flash",
+      "judgment": {
+        "found_correct_vuln": false,
+        "swc_id_match": false,
+        "severity_match": "wrong",
+        "location_accuracy": "missing",
+        "explanation_quality": 1,
+        "false_positives": 0,
+        "overall_score": 0.0,
+        "judge_notes": "The scanner failed to identify the Delegatecall to Untrusted Callee vulnerability and reported a parse error, indicating a failure to properly analyze the contract.",
+        "judge_cost_usd": 0.00043218999999999994
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    }
+  ]
+}

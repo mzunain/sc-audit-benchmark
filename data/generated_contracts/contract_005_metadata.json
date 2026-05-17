@@ -1,0 +1,11 @@
+{
+  "contract_id": "contract_005",
+  "template_id": "STAKING-REWARDS",
+  "vulnerability": {
+    "swc_id": "SWC-106",
+    "name": "Unprotected SELFDESTRUCT",
+    "severity": "Critical"
+  },
+  "generator_model": "nim:qwen/qwen3-coder-480b-a35b-instruct",
+  "generation_cost_usd": 0.0002355
+}

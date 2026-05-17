@@ -37,9 +37,12 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# Benchmark outputs (regenerated each run)
-output/
-data/generated_contracts/
+# Benchmark outputs — most are regenerated each run.
+# We commit the JSON metadata + presentation data so the deployed dashboard
+# has something to render without re-running the pipeline in the build step.
+output/scanner_reports/
+output/full_run.log
+data/generated_contracts/*.sol
 
 # Local tooling
 .claude/

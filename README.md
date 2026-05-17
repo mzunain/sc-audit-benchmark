@@ -90,20 +90,41 @@ npm run dev
 
 ## Dashboard
 
-```bash
-cd dashboard && npm install
-set -a && source ../.env && set +a
-npm run dev
-# http://localhost:3000
-```
-
 Three pages:
 - `/` — leaderboard with cost-adjusted and pure-quality views, philosophy chips, winner callout
 - `/breakdown` — per-model per-SWC detection heatmap
 - `/playground` — paste a Solidity contract, pick a model, get a structured scan report
 
-The playground route needs `OPENROUTER_API_KEY` and `NVIDIA_API_KEY` in the
-Next.js process env (sourced from `../.env` as shown).
+### Run locally
+
+```bash
+cd dashboard
+npm install
+npm run bundle-data           # copies fresh benchmark output into public/data
+set -a && source ../.env && set +a
+npm run dev
+# http://localhost:3000
+```
+
+The playground route reads `OPENROUTER_API_KEY` and `NVIDIA_API_KEY` from the
+process env (sourced from `../.env` as shown). Run `npm run bundle-data` again
+any time after re-running the Python pipeline so the dashboard picks up the new
+numbers.
+
+### Deploy to Vercel (free tier)
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fmzunain%2Fsc-audit-benchmark&project-name=sc-audit-benchmark&root-directory=dashboard&env=OPENROUTER_API_KEY,NVIDIA_API_KEY)
+
+Click the button, sign in with GitHub, set Root Directory to `dashboard` (Vercel
+auto-detects this from the deploy link), and paste the two API keys when
+prompted. Build takes ~1 minute; the resulting URL is shareable and the playground
+works end-to-end against the same free NIM + OpenRouter tiers.
+
+**Heads-up:** the playground endpoint is unauthenticated by default — anyone
+visiting the URL can burn through your free NIM credits. For a hackathon demo
+that's fine (worst case it stops responding when free credits run out).
+For longer-lived deployments, slap a rate limit on `app/api/playground/route.ts`
+or front it with Cloudflare Turnstile.
 
 ## Default Lineup
 

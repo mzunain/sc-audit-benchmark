@@ -1,0 +1,229 @@
+{
+  "model": "nim:minimaxai/minimax-m2.7",
+  "judgments": [
+    {
+      "contract_id": "contract_001",
+      "scanner_model": "nim:minimaxai/minimax-m2.7",
+      "judgment": {
+        "found_correct_vuln": true,
+        "swc_id_match": true,
+        "severity_match": "close",
+        "location_accuracy": "exact",
+        "explanation_quality": 5,
+        "false_positives": 0,
+        "overall_score": 0.95,
+        "judge_notes": "The scanner correctly identified the reentrancy vulnerability with accurate location and high-quality explanation, but slightly mismatched the severity level.",
+        "judge_cost_usd": 0.00050046
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_002",
+      "scanner_model": "nim:minimaxai/minimax-m2.7",
+      "judgment": {
+        "found_correct_vuln": false,
+        "swc_id_match": false,
+        "severity_match": "wrong",
+        "location_accuracy": "wrong",
+        "explanation_quality": 4,
+        "false_positives": 1,
+        "overall_score": 0.0,
+        "judge_notes": "The scanner incorrectly identified a reentrancy vulnerability instead of the actual integer overflow vulnerability, and provided a well-reasoned but incorrect explanation.",
+        "judge_cost_usd": 0.0004751
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_003",
+      "scanner_model": "nim:minimaxai/minimax-m2.7",
+      "judgment": {
+        "found_correct_vuln": true,
+        "swc_id_match": true,
+        "severity_match": "wrong",
+        "location_accuracy": "exact",
+        "explanation_quality": 4,
+        "false_positives": 4,
+        "overall_score": 0.6,
+        "judge_notes": "The scanner correctly identified the Unchecked Call Return Value vulnerability but incorrectly rated its severity as High instead of Medium, and also reported several false positives.",
+        "judge_cost_usd": 0.00080039
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_004",
+      "scanner_model": "nim:minimaxai/minimax-m2.7",
+      "judgment": {
+        "found_correct_vuln": true,
+        "swc_id_match": false,
+        "severity_match": "exact",
+        "location_accuracy": "exact",
+        "explanation_quality": 4,
+        "false_positives": 2,
+        "overall_score": 0.7,
+        "judge_notes": "The scanner correctly identified the vulnerability in the withdraw() and emergencyWithdraw() functions but incorrectly labeled them as SWC-100 instead of SWC-105, and also reported two unrelated vulnerabilities.",
+        "judge_cost_usd": 0.0006965799999999999
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_005",
+      "scanner_model": "nim:minimaxai/minimax-m2.7",
+      "judgment": {
+        "found_correct_vuln": true,
+        "swc_id_match": true,
+        "severity_match": "exact",
+        "location_accuracy": "exact",
+        "explanation_quality": 5,
+        "false_positives": 4,
+        "overall_score": 0.6,
+        "judge_notes": "The scanner correctly identified the SWC-106 vulnerability with accurate severity and location, but reported four additional false positives.",
+        "judge_cost_usd": 0.0006794199999999999
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_006",
+      "scanner_model": "nim:minimaxai/minimax-m2.7",
+      "judgment": {
+        "found_correct_vuln": true,
+        "swc_id_match": true,
+        "severity_match": "exact",
+        "location_accuracy": "exact",
+        "explanation_quality": 5,
+        "false_positives": 0,
+        "overall_score": 1.0,
+        "judge_notes": "The scanner accurately identified the SWC-112 vulnerability with correct severity and location, providing a well-reasoned explanation.",
+        "judge_cost_usd": 0.0005368300000000001
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_007",
+      "scanner_model": "nim:minimaxai/minimax-m2.7",
+      "judgment": {
+        "found_correct_vuln": false,
+        "swc_id_match": false,
+        "severity_match": "wrong",
+        "location_accuracy": "missing",
+        "explanation_quality": 1,
+        "false_positives": 0,
+        "overall_score": 0.0,
+        "judge_notes": "The scanner failed to identify the vulnerability and reported a parse error, indicating a failure to properly analyze the contract.",
+        "judge_cost_usd": 0.0004792
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_009",
+      "scanner_model": "nim:minimaxai/minimax-m2.7",
+      "judgment": {
+        "found_correct_vuln": true,
+        "swc_id_match": true,
+        "severity_match": "close",
+        "location_accuracy": "exact",
+        "explanation_quality": 5,
+        "false_positives": 2,
+        "overall_score": 0.7,
+        "judge_notes": "The scanner correctly identified the reentrancy vulnerability, but incorrectly reported two additional vulnerabilities, and slightly overestimated the severity of the reentrancy vulnerability.",
+        "judge_cost_usd": 0.00060766
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_010",
+      "scanner_model": "nim:minimaxai/minimax-m2.7",
+      "judgment": {
+        "found_correct_vuln": false,
+        "swc_id_match": false,
+        "severity_match": "wrong",
+        "location_accuracy": "missing",
+        "explanation_quality": 1,
+        "false_positives": 0,
+        "overall_score": 0.0,
+        "judge_notes": "The scanner failed to identify the integer overflow vulnerability and reported a parse error, indicating a failure to properly analyze the contract.",
+        "judge_cost_usd": 0.00045164
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_011",
+      "scanner_model": "nim:minimaxai/minimax-m2.7",
+      "judgment": {
+        "found_correct_vuln": true,
+        "swc_id_match": true,
+        "severity_match": "wrong",
+        "location_accuracy": "approximate",
+        "explanation_quality": 4,
+        "false_positives": 3,
+        "overall_score": 0.4,
+        "judge_notes": "The scanner correctly identified the Unchecked Call Return Value vulnerability, but incorrectly rated its severity as High instead of Medium and pointed to the wrong function, and also reported several false positives.",
+        "judge_cost_usd": 0.00068576
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_012",
+      "scanner_model": "nim:minimaxai/minimax-m2.7",
+      "judgment": {
+        "found_correct_vuln": false,
+        "swc_id_match": false,
+        "severity_match": "wrong",
+        "location_accuracy": "approximate",
+        "explanation_quality": 4,
+        "false_positives": 2,
+        "overall_score": 0.2,
+        "judge_notes": "The scanner incorrectly identified a reentrancy vulnerability and failed to detect the actual unprotected ether withdrawal vulnerability, resulting in a low overall score.",
+        "judge_cost_usd": 0.0005217099999999999
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_013",
+      "scanner_model": "nim:minimaxai/minimax-m2.7",
+      "judgment": {
+        "found_correct_vuln": true,
+        "swc_id_match": false,
+        "severity_match": "exact",
+        "location_accuracy": "exact",
+        "explanation_quality": 4,
+        "false_positives": 3,
+        "overall_score": 0.4,
+        "judge_notes": "The scanner correctly identified the unprotected selfdestruct vulnerability, but incorrectly labeled it as SWC-105 instead of SWC-106, and also reported three false positives.",
+        "judge_cost_usd": 0.00067965
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_014",
+      "scanner_model": "nim:minimaxai/minimax-m2.7",
+      "judgment": {
+        "found_correct_vuln": true,
+        "swc_id_match": true,
+        "severity_match": "exact",
+        "location_accuracy": "exact",
+        "explanation_quality": 5,
+        "false_positives": 2,
+        "overall_score": 0.6,
+        "judge_notes": "The scanner correctly identified the delegatecall vulnerability but also reported two false positives, a reentrancy issue and a missing default fallback function, which are not relevant to the ground truth vulnerability.",
+        "judge_cost_usd": 0.00061377
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    },
+    {
+      "contract_id": "contract_015",
+      "scanner_model": "nim:minimaxai/minimax-m2.7",
+      "judgment": {
+        "found_correct_vuln": false,
+        "swc_id_match": false,
+        "severity_match": "wrong",
+        "location_accuracy": "approximate",
+        "explanation_quality": 3,
+        "false_positives": 3,
+        "overall_score": 0.1,
+        "judge_notes": "The scanner failed to identify the Transaction Order Dependence vulnerability and instead reported unrelated issues with incorrect SWC IDs and severities.",
+        "judge_cost_usd": 0.00067471
+      },
+      "judge_model": "nim:meta/llama-3.3-70b-instruct"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "contract_id": "contract_007",
+  "template_id": "VAULT-DEPOSIT",
+  "vulnerability": {
+    "swc_id": "SWC-114",
+    "name": "Transaction Order Dependence",
+    "severity": "Medium"
+  },
+  "generator_model": "nim:qwen/qwen3-coder-480b-a35b-instruct",
+  "generation_cost_usd": 0.000228
+}

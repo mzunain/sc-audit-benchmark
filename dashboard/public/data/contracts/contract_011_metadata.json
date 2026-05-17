@@ -1,0 +1,11 @@
+{
+  "contract_id": "contract_011",
+  "template_id": "TOKEN-BASIC",
+  "vulnerability": {
+    "swc_id": "SWC-104",
+    "name": "Unchecked Call Return Value",
+    "severity": "Medium"
+  },
+  "generator_model": "nim:qwen/qwen3-coder-480b-a35b-instruct",
+  "generation_cost_usd": 0.00023339999999999998
+}
