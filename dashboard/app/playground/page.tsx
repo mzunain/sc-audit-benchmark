@@ -34,8 +34,8 @@ interface ScanResult {
   model_requested?: string;
   model_used?: string;
   used_fallback?: boolean;
-  report?: unknown;
-  usage?: unknown;
+  report?: Record<string, unknown> | null;
+  usage?: Record<string, unknown> | null;
   attempts?: { model: string; error: string; status: number }[];
   error?: string;
 }
