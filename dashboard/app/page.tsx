@@ -70,20 +70,10 @@ export default function Leaderboard() {
   const winnerMeta = winner ? modelMeta(winner.model) : null;
 
   return (
-    <div className="min-h-screen bg-stone-50">
+    <div className="min-h-screen">
       <div className="max-w-6xl mx-auto px-6 py-10">
 
         <header className="mb-10">
-          <div className="flex items-center justify-between mb-6 text-sm">
-            <span className="font-mono text-xs uppercase tracking-widest text-stone-500">
-              SC Audit Studio Benchmark
-            </span>
-            <nav className="flex gap-5 text-stone-600">
-              <a href="/analysis" className="hover:text-stone-900">Why these results</a>
-              <a href="/breakdown" className="hover:text-stone-900">Per-vuln breakdown</a>
-              <a href="/playground" className="hover:text-stone-900">Playground</a>
-            </nav>
-          </div>
           <h1 className="text-4xl font-bold text-stone-900 leading-tight tracking-tight">
             Solidity vulnerability benchmark
           </h1>
