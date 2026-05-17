@@ -20,7 +20,7 @@ Respond in this EXACT JSON format (no markdown, no extra text):
 
 interface RouteInfo {
   baseUrl: string;
-  apiKey: string | undefined;
+  apiKey: string;
   apiModel: string;
   extraHeaders: Record<string, string>;
 }
@@ -60,13 +60,37 @@ function resolveRoute(model: string): RouteInfo | { error: string; status: numbe
   };
 }
 
-export async function POST(req: NextRequest) {
-  const { code, model } = await req.json();
+function extractJsonFromText(text: string): unknown {
+  // First try a clean parse
+  try {
+    return JSON.parse(text.trim());
+  } catch {}
+  // Strip markdown code fences if any
+  const cleaned = text
+    .replace(/^```(?:json)?\s*\n/m, "")
+    .replace(/\n```\s*$/m, "")
+    .trim();
+  try {
+    return JSON.parse(cleaned);
+  } catch {}
+  // Last resort: regex out the first { ... } block
+  const match = text.match(/\{[\s\S]*\}/);
+  if (match) {
+    try {
+      return JSON.parse(match[0]);
+    } catch {}
+  }
+  return null;
+}
 
-  if (!code || typeof code !== "string") {
+export async function POST(req: NextRequest) {
+  const body = await req.json().catch(() => ({}));
+  const { code, model } = body as { code?: unknown; model?: unknown };
+
+  if (typeof code !== "string" || !code.trim()) {
     return NextResponse.json({ error: "Missing 'code' in request body" }, { status: 400 });
   }
-  if (!model || typeof model !== "string") {
+  if (typeof model !== "string" || !model) {
     return NextResponse.json({ error: "Missing 'model' in request body" }, { status: 400 });
   }
 
@@ -77,8 +101,9 @@ export async function POST(req: NextRequest) {
 
   const userPrompt = `Analyze this Solidity contract for security vulnerabilities:\n\n\`\`\`solidity\n${code}\n\`\`\`\n\nRespond with JSON only.`;
 
+  let upstream: Response;
   try {
-    const res = await fetch(`${route.baseUrl}/chat/completions`, {
+    upstream = await fetch(`${route.baseUrl}/chat/completions`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${route.apiKey}`,
@@ -87,7 +112,7 @@ export async function POST(req: NextRequest) {
       },
       body: JSON.stringify({
         model: route.apiModel,
-        max_tokens: 1500,
+        max_tokens: 2000,
         temperature: 0,
         messages: [
           { role: "system", content: SCANNER_SYSTEM_PROMPT },
@@ -95,31 +120,51 @@ export async function POST(req: NextRequest) {
         ],
       }),
     });
-
-    const data = await res.json();
-    if (!res.ok) {
-      return NextResponse.json({ error: data }, { status: res.status });
-    }
-
-    const text: string = data?.choices?.[0]?.message?.content ?? "";
-    let parsed: any = null;
-    try {
-      parsed = JSON.parse(text);
-    } catch {
-      const match = text.match(/\{[\s\S]*\}/);
-      if (match) {
-        try {
-          parsed = JSON.parse(match[0]);
-        } catch {}
-      }
-    }
-
-    return NextResponse.json({
-      model,
-      report: parsed ?? { raw: text },
-      usage: data.usage ?? null,
-    });
-  } catch (e: any) {
-    return NextResponse.json({ error: String(e) }, { status: 500 });
+  } catch (e) {
+    return NextResponse.json(
+      { error: `Couldn't reach ${route.baseUrl}: ${String(e)}` },
+      { status: 502 }
+    );
   }
+
+  const raw = await upstream.text();
+  let upstreamJson: any = null;
+  try {
+    upstreamJson = JSON.parse(raw);
+  } catch {
+    // Upstream returned non-JSON — surface it as a readable error instead of letting
+    // JSON.parse crash our handler with a "SyntaxError: Unexpected token..." message.
+    return NextResponse.json(
+      {
+        error: `Provider returned non-JSON (HTTP ${upstream.status}).`,
+        status: upstream.status,
+        upstream_body: raw.slice(0, 800),
+      },
+      { status: 502 }
+    );
+  }
+
+  if (!upstream.ok) {
+    // Provider returned a JSON error — pass it through.
+    const detail =
+      upstreamJson?.error?.message ||
+      upstreamJson?.error?.detail ||
+      upstreamJson?.detail ||
+      upstreamJson?.message ||
+      upstreamJson?.error ||
+      "Unknown provider error";
+    return NextResponse.json(
+      { error: typeof detail === "string" ? detail : JSON.stringify(detail), upstream_body: upstreamJson, status: upstream.status },
+      { status: upstream.status }
+    );
+  }
+
+  const text: string = upstreamJson?.choices?.[0]?.message?.content ?? "";
+  const parsed = extractJsonFromText(text);
+
+  return NextResponse.json({
+    model,
+    report: parsed ?? { raw: text || "(empty response from model)" },
+    usage: upstreamJson?.usage ?? null,
+  });
 }
