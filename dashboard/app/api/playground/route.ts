@@ -18,6 +18,14 @@ Respond in this EXACT JSON format (no markdown, no extra text):
   "summary": "Overall security assessment in 1 sentence"
 }`;
 
+// Fallback chain — if the user-selected model 429s or errors, try these in order.
+// All three are NIM models we've run end-to-end and seen succeed.
+const FALLBACK_CHAIN = [
+  "nim:qwen/qwen3-coder-480b-a35b-instruct",
+  "nim:meta/llama-3.3-70b-instruct",
+  "nim:minimaxai/minimax-m2.7",
+];
+
 interface RouteInfo {
   baseUrl: string;
   apiKey: string;
@@ -29,10 +37,7 @@ function resolveRoute(model: string): RouteInfo | { error: string; status: numbe
   if (model.startsWith("nim:")) {
     const apiKey = process.env.NVIDIA_API_KEY;
     if (!apiKey) {
-      return {
-        error: "NVIDIA_API_KEY not configured. Get one at https://build.nvidia.com",
-        status: 500,
-      };
+      return { error: "NVIDIA_API_KEY not configured.", status: 500 };
     }
     return {
       baseUrl: "https://integrate.api.nvidia.com/v1",
@@ -44,10 +49,7 @@ function resolveRoute(model: string): RouteInfo | { error: string; status: numbe
 
   const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
-    return {
-      error: "OPENROUTER_API_KEY not configured. Get one at https://openrouter.ai/keys",
-      status: 500,
-    };
+    return { error: "OPENROUTER_API_KEY not configured.", status: 500 };
   }
   return {
     baseUrl: "https://openrouter.ai/api/v1",
@@ -61,42 +63,25 @@ function resolveRoute(model: string): RouteInfo | { error: string; status: numbe
 }
 
 function extractJsonFromText(text: string): unknown {
-  // First try a clean parse
-  try {
-    return JSON.parse(text.trim());
-  } catch {}
-  // Strip markdown code fences if any
+  try { return JSON.parse(text.trim()); } catch {}
   const cleaned = text
     .replace(/^```(?:json)?\s*\n/m, "")
     .replace(/\n```\s*$/m, "")
     .trim();
-  try {
-    return JSON.parse(cleaned);
-  } catch {}
-  // Last resort: regex out the first { ... } block
+  try { return JSON.parse(cleaned); } catch {}
   const match = text.match(/\{[\s\S]*\}/);
-  if (match) {
-    try {
-      return JSON.parse(match[0]);
-    } catch {}
-  }
+  if (match) { try { return JSON.parse(match[0]); } catch {} }
   return null;
 }
 
-export async function POST(req: NextRequest) {
-  const body = await req.json().catch(() => ({}));
-  const { code, model } = body as { code?: unknown; model?: unknown };
+type ScanResult =
+  | { ok: true; report: unknown; usage: unknown; rawText: string }
+  | { ok: false; status: number; error: string; isRetryable: boolean };
 
-  if (typeof code !== "string" || !code.trim()) {
-    return NextResponse.json({ error: "Missing 'code' in request body" }, { status: 400 });
-  }
-  if (typeof model !== "string" || !model) {
-    return NextResponse.json({ error: "Missing 'model' in request body" }, { status: 400 });
-  }
-
+async function tryScan(model: string, code: string): Promise<ScanResult> {
   const route = resolveRoute(model);
   if ("error" in route) {
-    return NextResponse.json({ error: route.error }, { status: route.status });
+    return { ok: false, status: route.status, error: route.error, isRetryable: false };
   }
 
   const userPrompt = `Analyze this Solidity contract for security vulnerabilities:\n\n\`\`\`solidity\n${code}\n\`\`\`\n\nRespond with JSON only.`;
@@ -121,31 +106,28 @@ export async function POST(req: NextRequest) {
       }),
     });
   } catch (e) {
-    return NextResponse.json(
-      { error: `Couldn't reach ${route.baseUrl}: ${String(e)}` },
-      { status: 502 }
-    );
+    return { ok: false, status: 502, error: `Couldn't reach provider: ${String(e)}`, isRetryable: true };
   }
+
+  // Retry on every provider error except auth — fall-back chain can recover
+  // from rate limits, DEGRADED models, model-not-found, transient 5xx, etc.
+  // Only stop early if the credentials themselves are bad.
+  const shouldRetry = (status: number) => status !== 401 && status !== 403;
 
   const raw = await upstream.text();
   let upstreamJson: any = null;
   try {
     upstreamJson = JSON.parse(raw);
   } catch {
-    // Upstream returned non-JSON — surface it as a readable error instead of letting
-    // JSON.parse crash our handler with a "SyntaxError: Unexpected token..." message.
-    return NextResponse.json(
-      {
-        error: `Provider returned non-JSON (HTTP ${upstream.status}).`,
-        status: upstream.status,
-        upstream_body: raw.slice(0, 800),
-      },
-      { status: 502 }
-    );
+    return {
+      ok: false,
+      status: upstream.status,
+      error: `Provider returned non-JSON (HTTP ${upstream.status}): ${raw.slice(0, 200)}`,
+      isRetryable: shouldRetry(upstream.status),
+    };
   }
 
   if (!upstream.ok) {
-    // Provider returned a JSON error — pass it through.
     const detail =
       upstreamJson?.error?.message ||
       upstreamJson?.error?.detail ||
@@ -153,18 +135,74 @@ export async function POST(req: NextRequest) {
       upstreamJson?.message ||
       upstreamJson?.error ||
       "Unknown provider error";
-    return NextResponse.json(
-      { error: typeof detail === "string" ? detail : JSON.stringify(detail), upstream_body: upstreamJson, status: upstream.status },
-      { status: upstream.status }
-    );
+    return {
+      ok: false,
+      status: upstream.status,
+      error: typeof detail === "string" ? detail : JSON.stringify(detail),
+      isRetryable: shouldRetry(upstream.status),
+    };
   }
 
   const text: string = upstreamJson?.choices?.[0]?.message?.content ?? "";
   const parsed = extractJsonFromText(text);
 
-  return NextResponse.json({
-    model,
-    report: parsed ?? { raw: text || "(empty response from model)" },
+  // Empty content = retryable (we saw this with reasoning models hitting token limits)
+  if (!text.trim()) {
+    return { ok: false, status: 502, error: "Model returned empty response", isRetryable: true };
+  }
+
+  return {
+    ok: true,
+    report: parsed ?? { raw: text },
     usage: upstreamJson?.usage ?? null,
-  });
+    rawText: text,
+  };
+}
+
+export async function POST(req: NextRequest) {
+  const body = await req.json().catch(() => ({}));
+  const { code, model, enableFallback } = body as {
+    code?: unknown;
+    model?: unknown;
+    enableFallback?: unknown;
+  };
+
+  if (typeof code !== "string" || !code.trim()) {
+    return NextResponse.json({ error: "Missing 'code' in request body" }, { status: 400 });
+  }
+  if (typeof model !== "string" || !model) {
+    return NextResponse.json({ error: "Missing 'model' in request body" }, { status: 400 });
+  }
+
+  // Build the candidate list: user's pick first, then fallback chain (deduped).
+  const useFallback = enableFallback !== false;
+  const candidates = useFallback
+    ? [model, ...FALLBACK_CHAIN.filter((m) => m !== model)]
+    : [model];
+
+  const attempts: { model: string; error: string; status: number }[] = [];
+
+  for (const candidate of candidates) {
+    const result = await tryScan(candidate, code);
+    if (result.ok) {
+      return NextResponse.json({
+        model_requested: model,
+        model_used: candidate,
+        used_fallback: candidate !== model,
+        report: result.report,
+        usage: result.usage,
+        attempts: attempts.length > 0 ? attempts : undefined,
+      });
+    }
+    attempts.push({ model: candidate, error: result.error, status: result.status });
+    if (!result.isRetryable) break; // Hard error (e.g. missing API key) — don't keep trying
+  }
+
+  return NextResponse.json(
+    {
+      error: "All models failed",
+      attempts,
+    },
+    { status: 503 }
+  );
 }
