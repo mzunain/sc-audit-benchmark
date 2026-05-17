@@ -19,7 +19,7 @@ function cellColor(rate: number) {
   if (rate >= 0.5) return "bg-emerald-100";
   if (rate >= 0.25) return "bg-amber-100";
   if (rate > 0) return "bg-rose-100";
-  return "bg-gray-100";
+  return "bg-stone-50";
 }
 
 export default function Breakdown() {
@@ -34,35 +34,51 @@ export default function Breakdown() {
 
   if (!data) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8">
-        <div className="max-w-6xl mx-auto">Loading…</div>
+      <div className="min-h-screen bg-stone-50">
+        <div className="max-w-6xl mx-auto px-6 py-10 text-stone-500">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex items-center justify-between mb-2">
-          <a href="/" className="text-sm text-gray-500 hover:underline">← Leaderboard</a>
-          <a href="/analysis" className="text-sm text-gray-700 hover:underline">Why these results →</a>
-        </div>
-        <h1 className="text-3xl font-bold mb-2">Per-vulnerability breakdown</h1>
-        <p className="text-gray-600 mb-8">
-          How each model performs by SWC class. Detection rate = fraction of contracts where the
-          injected vulnerability was correctly identified.
-        </p>
+    <div className="min-h-screen bg-stone-50">
+      <div className="max-w-6xl mx-auto px-6 py-10">
 
-        <div className="bg-white rounded-lg shadow overflow-x-auto">
+        <header className="mb-10">
+          <div className="flex items-center justify-between mb-6 text-sm">
+            <a href="/" className="text-stone-500 hover:text-stone-900">← Leaderboard</a>
+            <nav className="flex gap-5 text-stone-600">
+              <a href="/analysis" className="hover:text-stone-900">Why these results</a>
+              <a href="/playground" className="hover:text-stone-900">Playground</a>
+            </nav>
+          </div>
+          <h1 className="text-4xl font-bold text-stone-900 leading-tight tracking-tight mb-3">
+            Per-vulnerability breakdown
+          </h1>
+          <p className="text-stone-600 text-lg leading-relaxed max-w-3xl">
+            How each model performs by SWC class. Detection rate is the fraction of contracts
+            where the injected vulnerability was correctly identified.
+          </p>
+        </header>
+
+        <div className="bg-white rounded-xl shadow-sm ring-1 ring-stone-200 overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-gray-100">
+            <thead className="bg-stone-50 border-b border-stone-200">
               <tr>
-                <th className="text-left p-3">Model</th>
+                <th className="text-left px-4 py-3 text-xs uppercase tracking-wider text-stone-500 font-semibold">
+                  Model
+                </th>
                 {data.swc_ids.map((swc) => (
-                  <th key={swc} className="p-3 text-center" title={data.swc_names[swc]}>
-                    <div className="font-mono text-xs">{swc}</div>
-                    <div className="text-xs text-gray-500 font-normal">
-                      {data.swc_names[swc].slice(0, 14)}
+                  <th
+                    key={swc}
+                    className="px-3 py-3 text-center text-xs"
+                    title={data.swc_names[swc]}
+                  >
+                    <div className="font-mono text-stone-700 font-semibold">{swc}</div>
+                    <div className="text-[10px] text-stone-500 font-normal mt-0.5">
+                      {data.swc_names[swc].length > 14
+                        ? data.swc_names[swc].slice(0, 14) + "..."
+                        : data.swc_names[swc]}
                     </div>
                   </th>
                 ))}
@@ -70,20 +86,31 @@ export default function Breakdown() {
             </thead>
             <tbody>
               {data.models.map((m) => (
-                <tr key={m} className="border-t">
-                  <td className="p-3 font-medium" title={m}>{shortLabel(m)}</td>
+                <tr key={m} className="border-b border-stone-100 last:border-0">
+                  <td className="px-4 py-3 font-medium text-stone-900" title={m}>
+                    {shortLabel(m)}
+                  </td>
                   {data.swc_ids.map((swc) => {
                     const cell = data.breakdown[m]?.[swc];
                     if (!cell || cell.total === 0) {
                       return (
-                        <td key={swc} className="p-3 text-center bg-gray-50 text-gray-300">—</td>
+                        <td
+                          key={swc}
+                          className="px-3 py-3 text-center text-stone-300 bg-stone-50/50"
+                        >
+                          ·
+                        </td>
                       );
                     }
                     const rate = cell.found / cell.total;
                     return (
-                      <td key={swc} className={`p-3 text-center ${cellColor(rate)}`}>
-                        <div className="font-semibold">{cell.found}/{cell.total}</div>
-                        <div className="text-xs text-gray-600">{Math.round(rate * 100)}%</div>
+                      <td key={swc} className={`px-3 py-3 text-center ${cellColor(rate)}`}>
+                        <div className="font-semibold text-stone-900 tabular-nums">
+                          {cell.found}/{cell.total}
+                        </div>
+                        <div className="text-[10px] text-stone-600 tabular-nums">
+                          {Math.round(rate * 100)}%
+                        </div>
                       </td>
                     );
                   })}
@@ -93,13 +120,14 @@ export default function Breakdown() {
           </table>
         </div>
 
-        <div className="mt-4 flex gap-2 text-xs text-gray-600">
-          <span className="px-2 py-1 bg-emerald-200">≥80% detection</span>
-          <span className="px-2 py-1 bg-emerald-100">50–79%</span>
-          <span className="px-2 py-1 bg-amber-100">25–49%</span>
-          <span className="px-2 py-1 bg-rose-100">1–24%</span>
-          <span className="px-2 py-1 bg-gray-100">0%</span>
+        <div className="mt-5 flex flex-wrap gap-2 text-xs text-stone-600">
+          <span className="px-2.5 py-1 bg-emerald-200 rounded">80% or higher</span>
+          <span className="px-2.5 py-1 bg-emerald-100 rounded">50 to 79%</span>
+          <span className="px-2.5 py-1 bg-amber-100 rounded">25 to 49%</span>
+          <span className="px-2.5 py-1 bg-rose-100 rounded">1 to 24%</span>
+          <span className="px-2.5 py-1 bg-stone-100 rounded">0%</span>
         </div>
+
       </div>
     </div>
   );

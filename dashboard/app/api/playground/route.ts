@@ -18,7 +18,7 @@ Respond in this EXACT JSON format (no markdown, no extra text):
   "summary": "Overall security assessment in 1 sentence"
 }`;
 
-// Fallback chain — if the user-selected model 429s or errors, try these in order.
+// Fallback chain: if the user-selected model 429s or errors, try these in order.
 // All three are NIM models we've run end-to-end and seen succeed.
 const FALLBACK_CHAIN = [
   "nim:qwen/qwen3-coder-480b-a35b-instruct",
@@ -109,7 +109,7 @@ async function tryScan(model: string, code: string): Promise<ScanResult> {
     return { ok: false, status: 502, error: `Couldn't reach provider: ${String(e)}`, isRetryable: true };
   }
 
-  // Retry on every provider error except auth — fall-back chain can recover
+  // Retry on every provider error except auth; the fallback chain can recover
   // from rate limits, DEGRADED models, model-not-found, transient 5xx, etc.
   // Only stop early if the credentials themselves are bad.
   const shouldRetry = (status: number) => status !== 401 && status !== 403;
@@ -195,7 +195,7 @@ export async function POST(req: NextRequest) {
       });
     }
     attempts.push({ model: candidate, error: result.error, status: result.status });
-    if (!result.isRetryable) break; // Hard error (e.g. missing API key) — don't keep trying
+    if (!result.isRetryable) break; // Hard error (e.g. missing API key); don't keep trying
   }
 
   return NextResponse.json(

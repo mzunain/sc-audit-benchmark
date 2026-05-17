@@ -5,25 +5,25 @@
       "swc_id": "SWC-114",
       "name": "Transaction Order Dependence",
       "headline": "Universal blind spot",
-      "description": "Logic depends on transaction ordering — classic front-running surface (e.g. the ERC-20 approve race condition, or any state-changing call whose outcome depends on whether someone else's tx lands first).",
+      "description": "Logic depends on transaction ordering. Classic front-running surface like the ERC-20 approve race condition, or any state-changing call whose outcome depends on whether someone else's tx lands first.",
       "results": [
         { "model": "nim:qwen/qwen3-coder-480b-a35b-instruct", "found": 0, "total": 1, "status": "none" },
         { "model": "nim:minimaxai/minimax-m2.7", "found": 0, "total": 2, "status": "none" },
         { "model": "nim:stepfun-ai/step-3.5-flash", "found": 0, "total": 1, "status": "none" }
       ],
-      "rationale": "Front-running isn't a local code property. Catching it requires reasoning about the mempool, gas auctions, and adversarial ordering — none of which is visible in a single contract file. Code-tuned models miss it because there's no syntactic pattern to recognize; reasoning models miss it because they don't have the blockchain-semantics framework loaded. This is the headline finding for audit firms: LLMs of any flavor today are not sufficient for front-running review."
+      "rationale": "Front-running isn't a local code property. Catching it requires reasoning about the mempool, gas auctions, and adversarial ordering, none of which is visible in a single contract file. Code-tuned models miss it because there's no syntactic pattern to recognize. Reasoning models miss it because they don't have the blockchain-semantics framework loaded. This is the headline finding for audit firms: LLMs of any flavor today are not sufficient for front-running review."
     },
     {
       "swc_id": "SWC-101",
       "name": "Integer Overflow / Underflow",
       "headline": "Where code-tuning wins outright",
-      "description": "Arithmetic that wraps because Solidity 0.8.x's default overflow checks were bypassed with an `unchecked { }` block or an explicit cast — easy to miss when staring at expression-level math.",
+      "description": "Arithmetic that wraps because Solidity 0.8.x's default overflow checks were bypassed with an unchecked block or an explicit cast. Easy to miss when you're staring at expression-level math.",
       "results": [
         { "model": "nim:qwen/qwen3-coder-480b-a35b-instruct", "found": 2, "total": 2, "status": "all" },
         { "model": "nim:minimaxai/minimax-m2.7", "found": 0, "total": 2, "status": "none" },
         { "model": "nim:stepfun-ai/step-3.5-flash", "found": 0, "total": 1, "status": "none" }
       ],
-      "rationale": "Recognizing this requires version-aware Solidity knowledge — that 0.8.x checks arithmetic by default, that `unchecked { }` opts out, that the bypass is dangerous. Qwen3-Coder has clearly trained on enough modern Solidity to internalize that. MiniMax reasons about the math abstractly and concludes the expression is fine. Reasoning without code-specific priors is a liability here.",
+      "rationale": "Recognizing this requires version-aware Solidity knowledge: that 0.8.x checks arithmetic by default, that unchecked blocks opt out, that the bypass is dangerous. Qwen3-Coder has clearly trained on enough modern Solidity to internalize that. MiniMax reasons about the math abstractly and concludes the expression is fine. Reasoning without code-specific priors is a liability here.",
       "exhibit": {
         "by": "nim:qwen/qwen3-coder-480b-a35b-instruct",
         "quote": "The calculateRewards function performs multiplication without overflow protection, which can cause unexpected behavior when large numbers are multiplied together."
@@ -39,7 +39,7 @@
         { "model": "nim:minimaxai/minimax-m2.7", "found": 2, "total": 2, "status": "all" },
         { "model": "nim:stepfun-ai/step-3.5-flash", "found": 0, "total": 1, "status": "none" }
       ],
-      "rationale": "This is the most-documented Solidity bug class on the public internet — every tutorial, every audit primer, every security blog uses it as the example. Both code-tuned models flag it instantly. Step-3.5-Flash's failure isn't about the pattern being hard; it's that the model exhausts its token budget on reasoning preamble before emitting structured output. Same model with a larger `max_tokens` would likely catch it.",
+      "rationale": "This is the most-documented Solidity bug class on the public internet. Every tutorial, every audit primer, every security blog uses it as the example. Both code-tuned models flag it instantly. Step-3.5-Flash's failure isn't about the pattern being hard. It's that the model exhausts its token budget on reasoning preamble before emitting structured output. Same model with a larger max_tokens would likely catch it.",
       "exhibit": {
         "by": "nim:qwen/qwen3-coder-480b-a35b-instruct",
         "quote": "The withdraw function makes an external call before updating the state, which allows for potential reentrancy attacks where the caller can re-enter the function multiple times before the balance is reduced."
@@ -49,13 +49,13 @@
       "swc_id": "SWC-104",
       "name": "Unchecked Call Return Value",
       "headline": "Where reasoning helps",
-      "description": "A low-level `.call`, `.send`, or `transfer` whose return value is never checked — silent failures, accounting drift, exploitable if the caller's logic assumes success.",
+      "description": "A low-level call, send, or transfer whose return value is never checked. Silent failures, accounting drift, exploitable if the caller's logic assumes success.",
       "results": [
         { "model": "nim:qwen/qwen3-coder-480b-a35b-instruct", "found": 1, "total": 2, "status": "partial" },
         { "model": "nim:minimaxai/minimax-m2.7", "found": 2, "total": 2, "status": "all" },
         { "model": "nim:stepfun-ai/step-3.5-flash", "found": 0, "total": 2, "status": "none" }
       ],
-      "rationale": "MiniMax beats Qwen here, which is rare. Unchecked-call requires understanding *intent* — the model has to notice that a missing `require(success, ...)` matters because the caller's subsequent logic depends on the transfer having actually happened. That's more of a reasoning task than a pattern-matching one. MiniMax's hybrid architecture pays off in cases where the bug is what's *absent* rather than what's present.",
+      "rationale": "MiniMax beats Qwen here, which is rare. Unchecked-call requires understanding intent: the model has to notice that a missing success check matters because the caller's subsequent logic depends on the transfer having actually happened. That's more of a reasoning task than a pattern-matching one. MiniMax's hybrid architecture pays off in cases where the bug is what's absent rather than what's present.",
       "exhibit": {
         "by": "nim:qwen/qwen3-coder-480b-a35b-instruct",
         "quote": "The recipient.transfer() call does not check the return value, which could lead to silent failures and unexpected behavior."
@@ -65,13 +65,13 @@
       "swc_id": "SWC-112",
       "name": "Delegatecall to Untrusted Callee",
       "headline": "Data-flow reasoning required",
-      "description": "`target.delegatecall(data)` where `target` is caller-controlled gives the caller full code-execution authority over the contract's storage. The Parity multisig that froze $280M was this bug.",
+      "description": "target.delegatecall(data) where target is caller-controlled gives the caller full code-execution authority over the contract's storage. The Parity multisig that froze $280M was this bug.",
       "results": [
         { "model": "nim:qwen/qwen3-coder-480b-a35b-instruct", "found": 1, "total": 2, "status": "partial" },
         { "model": "nim:minimaxai/minimax-m2.7", "found": 2, "total": 2, "status": "all" },
         { "model": "nim:stepfun-ai/step-3.5-flash", "found": 1, "total": 2, "status": "partial" }
       ],
-      "rationale": "Catching this requires tracing where `target` comes from — is it a constant, an immutable, a constructor arg, or worse, a function parameter? It's a data-flow question, not a syntax question. MiniMax's reasoning side handles the trace; pure code-tuning helps less. This is also one of the SWCs where Step-3.5-Flash actually scores — reasoning on data flow plays to its strengths even with the token-budget handicap.",
+      "rationale": "Catching this requires tracing where target comes from. Is it a constant, an immutable, a constructor arg, or worse, a function parameter? It's a data-flow question, not a syntax question. MiniMax's reasoning side handles the trace; pure code-tuning helps less. This is also one of the SWCs where Step-3.5-Flash actually scores. Reasoning on data flow plays to its strengths even with the token-budget handicap.",
       "exhibit": {
         "by": "nim:qwen/qwen3-coder-480b-a35b-instruct",
         "quote": "The upgrade function allows delegatecall to a user-specified contract address, which can lead to arbitrary code execution and theft of contract funds."
@@ -81,13 +81,13 @@
       "swc_id": "SWC-106",
       "name": "Unprotected SELFDESTRUCT",
       "headline": "The simplest pattern",
-      "description": "`selfdestruct(addr)` callable without access control — anyone can kill the contract and direct its balance to themselves.",
+      "description": "selfdestruct(addr) callable without access control. Anyone can kill the contract and direct its balance to themselves.",
       "results": [
         { "model": "nim:qwen/qwen3-coder-480b-a35b-instruct", "found": 2, "total": 2, "status": "all" },
         { "model": "nim:minimaxai/minimax-m2.7", "found": 2, "total": 2, "status": "all" },
         { "model": "nim:stepfun-ai/step-3.5-flash", "found": 1, "total": 2, "status": "partial" }
       ],
-      "rationale": "This is essentially keyword detection — `selfdestruct(` without `onlyOwner` or equivalent nearby. The pattern is shallow enough that even a basic linter could catch it, which is why both code-tuned models hit 100%. Step-3.5-Flash's partial score here is the most damning result on the page: if a 200B reasoning model can't reliably flag a pattern a regex could catch, deploying it for audit triage doesn't make economic sense.",
+      "rationale": "This is essentially keyword detection: selfdestruct(... without an onlyOwner or equivalent nearby. The pattern is shallow enough that even a basic linter could catch it, which is why both code-tuned models hit 100%. Step-3.5-Flash's partial score here is the most damning result on the page. If a 200B reasoning model can't reliably flag a pattern a regex could catch, deploying it for audit triage doesn't make economic sense.",
       "exhibit": {
         "by": "nim:qwen/qwen3-coder-480b-a35b-instruct",
         "quote": "The emergencyWithdraw function calls selfdestruct on the contract, which can be exploited by anyone to destroy the contract and steal funds."
@@ -96,31 +96,31 @@
     {
       "swc_id": "SWC-128",
       "name": "DoS with Block Gas Limit",
-      "headline": "Pattern + implication",
-      "description": "An unbounded `for` loop over a user-grown data structure — eventually the loop costs more gas than a single block allows, and the function becomes uncallable.",
+      "headline": "Pattern plus implication",
+      "description": "An unbounded for loop over a user-grown data structure. Eventually the loop costs more gas than a single block allows, and the function becomes uncallable.",
       "results": [
         { "model": "nim:qwen/qwen3-coder-480b-a35b-instruct", "found": 1, "total": 1, "status": "all" },
         { "model": "nim:minimaxai/minimax-m2.7", "found": 0, "total": 0, "status": "untested" },
         { "model": "nim:stepfun-ai/step-3.5-flash", "found": 0, "total": 1, "status": "none" }
       ],
-      "rationale": "Only Qwen3-Coder caught this. The bug requires two leaps: notice the loop is over an unbounded array (pattern), then infer the gas-limit consequence (implication about EVM economics). Reasoning models can do the second step but miss the first because they don't have the 'unbounded array' priors that come from reading lots of Solidity. Code-tuned models do both. (MiniMax wasn't tested on a SWC-128 contract in this run — round-robin assignment left it without one.)"
+      "rationale": "Only Qwen3-Coder caught this. The bug requires two leaps. First, notice the loop is over an unbounded array (pattern). Then, infer the gas-limit consequence (implication about EVM economics). Reasoning models can do the second step but miss the first because they don't have the unbounded-array priors that come from reading lots of Solidity. Code-tuned models do both. MiniMax wasn't tested on a SWC-128 contract in this run because round-robin assignment left it without one."
     },
     {
       "swc_id": "SWC-105",
       "name": "Unprotected Ether Withdrawal",
       "headline": "Hardest of the eight",
-      "description": "A `withdraw` (or similar) function that drains contract balance, missing an `onlyOwner` or equivalent access check.",
+      "description": "A withdraw (or similar) function that drains contract balance, missing an onlyOwner or equivalent access check.",
       "results": [
         { "model": "nim:qwen/qwen3-coder-480b-a35b-instruct", "found": 1, "total": 2, "status": "partial" },
         { "model": "nim:minimaxai/minimax-m2.7", "found": 1, "total": 2, "status": "partial" },
         { "model": "nim:stepfun-ai/step-3.5-flash", "found": 0, "total": 1, "status": "none" }
       ],
-      "rationale": "Every model struggles here, even the winners. That's because access control is *contextual* — whether a function is 'unprotected' depends on the contract's intended trust model, which the model has to guess from naming conventions and surrounding logic. A function called `withdraw()` with no modifier might be a bug, or might be deliberately public for a faucet contract. This is the SWC class that most needs human judgment alongside LLM triage.",
+      "rationale": "Every model struggles here, even the winners. That's because access control is contextual. Whether a function is unprotected depends on the contract's intended trust model, which the model has to guess from naming conventions and surrounding logic. A function called withdraw() with no modifier might be a bug, or might be deliberately public for a faucet contract. This is the SWC class that most needs human judgment alongside LLM triage.",
       "exhibit": {
         "by": "nim:qwen/qwen3-coder-480b-a35b-instruct",
         "quote": "The withdraw function allows anyone to drain the entire contract balance due to missing access control checks."
       }
     }
   ],
-  "conclusion": "The findings cluster into three groups. (1) Pattern-recognition bugs — reentrancy, selfdestruct — are dominated by code-tuned models; reasoning adds nothing. (2) Data-flow bugs — unchecked-call, delegatecall — favour hybrid models that can trace where values come from. (3) Semantic bugs — front-running, contextual access control — defeat all of today's open-weight models and still need humans. The takeaway for an audit firm picking an LLM: code-tuning is the higher-leverage choice for the bulk of SWC classes, and front-running coverage is not on the table yet from any vendor."
+  "conclusion": "The findings cluster into three groups. First, pattern-recognition bugs like reentrancy and selfdestruct are dominated by code-tuned models; reasoning adds nothing. Second, data-flow bugs like unchecked-call and delegatecall favour hybrid models that can trace where values come from. Third, semantic bugs like front-running and contextual access control defeat all of today's open-weight models and still need humans. The takeaway for an audit firm picking an LLM: code-tuning is the higher-leverage choice for the bulk of SWC classes, and front-running coverage is not on the table yet from any vendor."
 }
