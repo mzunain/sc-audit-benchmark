@@ -43,3 +43,7 @@ data/generated_contracts/
 
 # Local tooling
 .claude/
+
+# Pitch deck render artifacts (the .pptx itself is committed)
+sc-audit-benchmark-pitch.pdf
+slide-*.jpg
