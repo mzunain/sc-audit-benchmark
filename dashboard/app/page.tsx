@@ -20,17 +20,17 @@ const MODEL_META: Record<string, { short: string; philosophy: string; tone: stri
   "nim:qwen/qwen3-coder-480b-a35b-instruct": {
     short: "Qwen3-Coder 480B",
     philosophy: "Code specialist",
-    tone: "bg-sky-100 text-sky-700",
+    tone: "bg-sky-50 text-sky-700 ring-1 ring-sky-200",
   },
   "nim:minimaxai/minimax-m2.7": {
     short: "MiniMax M2.7",
-    philosophy: "Code + reasoning hybrid",
-    tone: "bg-violet-100 text-violet-700",
+    philosophy: "Code + reasoning",
+    tone: "bg-violet-50 text-violet-700 ring-1 ring-violet-200",
   },
   "nim:stepfun-ai/step-3.5-flash": {
     short: "Step 3.5 Flash",
     philosophy: "Reasoning specialist",
-    tone: "bg-amber-100 text-amber-700",
+    tone: "bg-amber-50 text-amber-700 ring-1 ring-amber-200",
   },
 };
 
@@ -38,14 +38,10 @@ function modelMeta(model: string) {
   return (
     MODEL_META[model] ?? {
       short: model.replace(/^nim:/, ""),
-      philosophy: "—",
-      tone: "bg-gray-100 text-gray-700",
+      philosophy: "Untagged",
+      tone: "bg-gray-50 text-gray-700 ring-1 ring-gray-200",
     }
   );
-}
-
-function chartLabel(model: string) {
-  return modelMeta(model).short;
 }
 
 export default function Leaderboard() {
@@ -69,66 +65,83 @@ export default function Leaderboard() {
     sortBy === "value" ? b.value - a.value : b.quality - a.quality
   );
 
-  const chartData = sorted.map((r) => ({ ...r, label: chartLabel(r.model) }));
-
+  const chartData = sorted.map((r) => ({ ...r, label: modelMeta(r.model).short }));
   const winner = winners?.[sortBy === "value" ? "best_value" : "highest_quality"];
   const winnerMeta = winner ? modelMeta(winner.model) : null;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex items-baseline justify-between mb-1">
-          <h1 className="text-3xl font-bold">Solidity Vulnerability Benchmark</h1>
-          <div className="flex gap-3 text-sm">
-            <a href="/analysis" className="text-gray-700 hover:underline">Why these results →</a>
-            <a href="/breakdown" className="text-gray-700 hover:underline">Per-vuln breakdown →</a>
-            <a href="/playground" className="text-gray-700 hover:underline">Playground →</a>
+    <div className="min-h-screen bg-stone-50">
+      <div className="max-w-6xl mx-auto px-6 py-10">
+
+        <header className="mb-10">
+          <div className="flex items-center justify-between mb-6 text-sm">
+            <span className="font-mono text-xs uppercase tracking-widest text-stone-500">
+              SC Audit Studio Benchmark
+            </span>
+            <nav className="flex gap-5 text-stone-600">
+              <a href="/analysis" className="hover:text-stone-900">Why these results</a>
+              <a href="/breakdown" className="hover:text-stone-900">Per-vuln breakdown</a>
+              <a href="/playground" className="hover:text-stone-900">Playground</a>
+            </nav>
           </div>
-        </div>
-        <p className="text-gray-600 mb-6">
-          Three open-weight model philosophies tested on {totalContracts || 15} LLM-generated vulnerable
-          contracts. Scanners are graded by an independent LLM-as-judge against the injected ground truth.
-        </p>
+          <h1 className="text-4xl font-bold text-stone-900 leading-tight tracking-tight">
+            Solidity vulnerability benchmark
+          </h1>
+          <p className="text-stone-600 mt-3 text-lg max-w-3xl leading-relaxed">
+            Three open-weight model philosophies, tested on {totalContracts || 15} LLM-generated vulnerable
+            contracts. Scanners are graded by an independent LLM-as-judge against the injected ground truth.
+          </p>
+        </header>
 
         {winner && winnerMeta && (
-          <div className="bg-white border-l-4 border-emerald-500 p-4 mb-6 rounded shadow-sm">
-            <div className="text-xs uppercase tracking-wide text-gray-500 mb-1">Headline</div>
-            <div className="text-base">
-              <span className="font-semibold">{winnerMeta.short}</span>
-              <span className="text-gray-500"> ({winnerMeta.philosophy})</span>
-              {" "}wins on{" "}
-              {sortBy === "value" ? "cost-adjusted score" : "raw quality"}
-              {" "}— audit firms can self-host an open-weight 480B model that beats reasoning specialists
-              and undercuts closed frontier prices.
+          <div className="bg-white rounded-xl shadow-sm ring-1 ring-stone-200 p-6 mb-8">
+            <div className="text-xs uppercase tracking-wider text-emerald-700 font-semibold mb-2">
+              Headline
             </div>
+            <p className="text-stone-900 leading-relaxed text-[15px]">
+              <span className="font-semibold">{winnerMeta.short}</span>{" "}
+              <span className="text-stone-500">({winnerMeta.philosophy})</span>{" "}
+              wins on {sortBy === "value" ? "cost-adjusted score" : "raw quality"}. Audit firms can
+              self-host an open-weight 480B model that beats reasoning specialists and undercuts
+              closed frontier prices.
+            </p>
           </div>
         )}
 
-        <div className="flex gap-2 mb-4">
+        <div className="flex items-center gap-2 mb-4">
+          <span className="text-sm text-stone-500 mr-2">Sort by</span>
           <button
             onClick={() => setSortBy("value")}
-            className={`px-4 py-2 rounded ${sortBy === "value" ? "bg-black text-white" : "bg-white border"}`}
+            className={`px-3 py-1.5 text-sm rounded-md transition ${
+              sortBy === "value"
+                ? "bg-stone-900 text-white"
+                : "bg-white text-stone-700 ring-1 ring-stone-200 hover:ring-stone-300"
+            }`}
           >
             Cost-adjusted
           </button>
           <button
             onClick={() => setSortBy("quality")}
-            className={`px-4 py-2 rounded ${sortBy === "quality" ? "bg-black text-white" : "bg-white border"}`}
+            className={`px-3 py-1.5 text-sm rounded-md transition ${
+              sortBy === "quality"
+                ? "bg-stone-900 text-white"
+                : "bg-white text-stone-700 ring-1 ring-stone-200 hover:ring-stone-300"
+            }`}
           >
             Pure quality
           </button>
         </div>
 
-        <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm ring-1 ring-stone-200 overflow-hidden">
           <table className="w-full">
-            <thead className="bg-gray-100 text-sm">
-              <tr>
-                <th className="text-left p-4">Model</th>
-                <th className="text-left p-4">Philosophy</th>
-                <th className="text-right p-4">Detection</th>
-                <th className="text-right p-4">Quality</th>
-                <th className="text-right p-4">Cost (15 scans)</th>
-                <th className="text-right p-4">Cost-adjusted</th>
+            <thead className="bg-stone-50 border-b border-stone-200">
+              <tr className="text-xs uppercase tracking-wider text-stone-500">
+                <th className="text-left px-6 py-3 font-semibold">Model</th>
+                <th className="text-left px-6 py-3 font-semibold">Philosophy</th>
+                <th className="text-right px-6 py-3 font-semibold">Detection</th>
+                <th className="text-right px-6 py-3 font-semibold">Quality</th>
+                <th className="text-right px-6 py-3 font-semibold">Cost (15)</th>
+                <th className="text-right px-6 py-3 font-semibold">Cost-adj.</th>
               </tr>
             </thead>
             <tbody>
@@ -136,28 +149,47 @@ export default function Leaderboard() {
                 const meta = modelMeta(row.model);
                 const isWinner = i === 0;
                 return (
-                  <tr key={row.model} className={isWinner ? "bg-emerald-50" : ""}>
-                    <td className="p-4">
-                      <div className={isWinner ? "font-semibold" : ""}>
-                        {isWinner && <span className="mr-1">🏆</span>}
-                        {meta.short}
+                  <tr
+                    key={row.model}
+                    className={`border-b border-stone-100 last:border-0 ${
+                      isWinner ? "bg-emerald-50/30" : "hover:bg-stone-50/50"
+                    }`}
+                  >
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2">
+                        {isWinner && <span className="text-base">🏆</span>}
+                        <div>
+                          <div className={`text-stone-900 ${isWinner ? "font-semibold" : "font-medium"}`}>
+                            {meta.short}
+                          </div>
+                          <div className="text-xs font-mono text-stone-400 mt-0.5">{row.model}</div>
+                        </div>
                       </div>
-                      <div className="text-xs text-gray-500 font-mono">{row.model}</div>
                     </td>
-                    <td className="p-4">
-                      <span className={`text-xs px-2 py-1 rounded ${meta.tone}`}>{meta.philosophy}</span>
+                    <td className="px-6 py-4">
+                      <span className={`text-xs px-2.5 py-1 rounded-full ${meta.tone}`}>
+                        {meta.philosophy}
+                      </span>
                     </td>
-                    <td className="text-right p-4">{row.detection.toFixed(1)}%</td>
-                    <td className="text-right p-4">{row.quality.toFixed(1)}</td>
-                    <td className="text-right p-4">${row.cost_usd.toFixed(4)}</td>
-                    <td className="text-right p-4 font-semibold">{row.value.toFixed(0)}</td>
+                    <td className="px-6 py-4 text-right text-stone-700 tabular-nums">
+                      {row.detection.toFixed(1)}%
+                    </td>
+                    <td className="px-6 py-4 text-right text-stone-700 tabular-nums">
+                      {row.quality.toFixed(1)}
+                    </td>
+                    <td className="px-6 py-4 text-right text-stone-700 tabular-nums">
+                      ${row.cost_usd.toFixed(4)}
+                    </td>
+                    <td className="px-6 py-4 text-right font-semibold text-stone-900 tabular-nums">
+                      {row.value.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                    </td>
                   </tr>
                 );
               })}
               {sorted.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-gray-400">
-                    No results yet. Run <code>python src/main.py</code> to generate data.
+                  <td colSpan={6} className="px-6 py-12 text-center text-stone-400">
+                    No results yet. Run <code className="font-mono text-stone-600">python src/main.py</code> to generate data.
                   </td>
                 </tr>
               )}
@@ -166,26 +198,34 @@ export default function Leaderboard() {
         </div>
 
         {sorted.length > 0 && (
-          <div className="mt-6 bg-white p-6 rounded-lg shadow">
-            <h2 className="text-lg font-semibold mb-3">
+          <div className="mt-6 bg-white rounded-xl shadow-sm ring-1 ring-stone-200 p-6">
+            <h2 className="text-sm font-semibold text-stone-700 mb-4">
               {sortBy === "value" ? "Cost-adjusted score" : "Quality score"}
             </h2>
-            <ResponsiveContainer width="100%" height={260}>
-              <BarChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="label" angle={-12} textAnchor="end" height={70} fontSize={12} />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey={sortBy} fill="#10b981" />
+            <ResponsiveContainer width="100%" height={240}>
+              <BarChart data={chartData} margin={{ top: 5, right: 10, left: 0, bottom: 30 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e7e5e4" vertical={false} />
+                <XAxis dataKey="label" angle={-10} textAnchor="end" height={50} fontSize={11} stroke="#78716c" />
+                <YAxis fontSize={11} stroke="#78716c" />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "#fff",
+                    border: "1px solid #e7e5e4",
+                    borderRadius: 8,
+                    fontSize: 12,
+                  }}
+                />
+                <Bar dataKey={sortBy} fill="#10b981" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         )}
 
-        <div className="mt-6 text-xs text-gray-500">
-          Cost column = commercial list price (per million tokens) × actual tokens used. Benchmark
-          itself ran on NVIDIA NIM free credits. Cost-adjusted = quality / cost.
-        </div>
+        <footer className="mt-8 text-xs text-stone-500 leading-relaxed">
+          Cost column is commercial list price per million tokens times actual tokens used. The
+          benchmark itself ran on NVIDIA NIM free credits. Cost-adjusted is quality divided by cost.
+        </footer>
+
       </div>
     </div>
   );

@@ -64,26 +64,39 @@ export default function Playground() {
     setLoading(false);
   };
 
-  const requestedLabel = scanResult?.model_requested ? MODEL_LABEL[scanResult.model_requested] : null;
+  const requestedLabel = scanResult?.model_requested
+    ? MODEL_LABEL[scanResult.model_requested]
+    : null;
   const usedLabel = scanResult?.model_used ? MODEL_LABEL[scanResult.model_used] : null;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex items-center justify-between mb-2">
-          <a href="/" className="text-sm text-gray-500 hover:underline">← Leaderboard</a>
-          <a href="/analysis" className="text-sm text-gray-700 hover:underline">Why these results →</a>
-        </div>
-        <h1 className="text-3xl font-bold mb-2">Vulnerability Scanner Playground</h1>
-        <p className="text-gray-600 mb-6">Test any model against any contract. Falls back automatically if a model rate-limits.</p>
+    <div className="min-h-screen bg-stone-50">
+      <div className="max-w-6xl mx-auto px-6 py-10">
 
-        <div className="grid grid-cols-2 gap-6">
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <label className="font-semibold">Solidity Contract</label>
+        <header className="mb-8">
+          <div className="flex items-center justify-between mb-6 text-sm">
+            <a href="/" className="text-stone-500 hover:text-stone-900">← Leaderboard</a>
+            <nav className="flex gap-5 text-stone-600">
+              <a href="/analysis" className="hover:text-stone-900">Why these results</a>
+              <a href="/breakdown" className="hover:text-stone-900">Per-vuln breakdown</a>
+            </nav>
+          </div>
+          <h1 className="text-4xl font-bold text-stone-900 leading-tight tracking-tight mb-3">
+            Scanner playground
+          </h1>
+          <p className="text-stone-600 text-lg leading-relaxed">
+            Test any model against any contract. Falls back automatically if a model rate-limits.
+          </p>
+        </header>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+          <div className="bg-white rounded-xl shadow-sm ring-1 ring-stone-200 p-5">
+            <div className="flex items-center justify-between mb-3">
+              <label className="text-sm font-semibold text-stone-700">Solidity contract</label>
               <button
                 onClick={() => setContractCode(DEMO_CONTRACT)}
-                className="text-xs text-emerald-700 hover:underline"
+                className="text-xs text-emerald-700 hover:text-emerald-800 font-medium"
               >
                 Load demo contract
               </button>
@@ -91,24 +104,30 @@ export default function Playground() {
             <textarea
               value={contractCode}
               onChange={(e) => setContractCode(e.target.value)}
-              className="w-full h-96 p-4 border rounded font-mono text-sm"
-              placeholder="Paste your Solidity code here…"
+              className="w-full h-96 p-3 border border-stone-200 rounded-lg font-mono text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+              placeholder="Paste your Solidity code here, or click Load demo contract..."
             />
             <div className="mt-4 flex flex-wrap gap-3 items-center">
               <select
                 value={model}
                 onChange={(e) => setModel(e.target.value)}
-                className="p-2 border rounded text-sm"
+                className="px-3 py-2 border border-stone-200 rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
               >
                 <optgroup label="Recommended (NIM, free credits)">
-                  <option value="nim:qwen/qwen3-coder-480b-a35b-instruct">Qwen3-Coder 480B — code specialist</option>
-                  <option value="nim:meta/llama-3.3-70b-instruct">Llama 3.3 70B — general (most stable)</option>
-                  <option value="nim:minimaxai/minimax-m2.7">MiniMax M2.7 — code + reasoning</option>
-                  <option value="nim:zai-org/glm-4.5">GLM-4.5 — code + reasoning hybrid</option>
+                  <option value="nim:qwen/qwen3-coder-480b-a35b-instruct">
+                    Qwen3-Coder 480B, code specialist
+                  </option>
+                  <option value="nim:meta/llama-3.3-70b-instruct">
+                    Llama 3.3 70B, most stable
+                  </option>
+                  <option value="nim:minimaxai/minimax-m2.7">
+                    MiniMax M2.7, code + reasoning
+                  </option>
+                  <option value="nim:zai-org/glm-4.5">GLM-4.5, hybrid</option>
                 </optgroup>
                 <optgroup label="Reasoning (NIM, may rate-limit)">
-                  <option value="nim:stepfun-ai/step-3.5-flash">Step 3.5 Flash — pure reasoning</option>
-                  <option value="nim:bytedance/seed-oss-36b-instruct">Seed-OSS 36B — agentic reasoning</option>
+                  <option value="nim:stepfun-ai/step-3.5-flash">Step 3.5 Flash</option>
+                  <option value="nim:bytedance/seed-oss-36b-instruct">Seed-OSS 36B</option>
                 </optgroup>
                 <optgroup label="OpenRouter (paid)">
                   <option value="anthropic/claude-3.5-sonnet">Claude 3.5 Sonnet</option>
@@ -116,65 +135,85 @@ export default function Playground() {
                   <option value="google/gemini-flash-1.5">Gemini 1.5 Flash</option>
                 </optgroup>
               </select>
-              <label className="text-xs flex items-center gap-1.5 text-gray-700">
+              <label className="text-xs flex items-center gap-1.5 text-stone-700">
                 <input
                   type="checkbox"
                   checked={enableFallback}
                   onChange={(e) => setEnableFallback(e.target.checked)}
+                  className="rounded text-emerald-600 focus:ring-emerald-500"
                 />
                 Auto-fallback on rate limit
               </label>
               <button
                 onClick={runScan}
                 disabled={loading || !contractCode}
-                className="px-6 py-2 bg-black text-white rounded disabled:opacity-50 ml-auto"
+                className="ml-auto px-5 py-2 bg-stone-900 hover:bg-stone-800 text-white text-sm font-medium rounded-md disabled:opacity-40 disabled:cursor-not-allowed transition"
               >
-                {loading ? "Scanning…" : "Run Scan"}
+                {loading ? "Scanning..." : "Run scan"}
               </button>
             </div>
           </div>
 
-          <div>
-            <label className="block mb-2 font-semibold">Scanner Report</label>
-            <div className="w-full h-96 p-4 border rounded bg-white overflow-auto">
+          <div className="bg-white rounded-xl shadow-sm ring-1 ring-stone-200 p-5">
+            <label className="block mb-3 text-sm font-semibold text-stone-700">
+              Scanner report
+            </label>
+            <div className="w-full h-96 p-3 border border-stone-200 rounded-lg bg-stone-50/30 overflow-auto">
               {!scanResult && !loading && (
-                <p className="text-gray-400">Run a scan to see results.</p>
+                <p className="text-stone-400 text-sm">Run a scan to see results.</p>
               )}
-              {loading && <p className="text-gray-500">Calling provider…</p>}
+              {loading && (
+                <div className="flex items-center gap-2 text-stone-500 text-sm">
+                  <div className="w-3 h-3 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+                  Calling provider...
+                </div>
+              )}
               {scanResult?.error && (
                 <div>
                   <div className="text-rose-700 font-semibold text-sm mb-2">All models failed</div>
-                  <p className="text-xs text-gray-600 mb-3">
-                    The request was retried across the fallback chain and every provider returned an error.
-                    Common causes: NIM free-tier rate limit, model temporarily DEGRADED, or contract too long.
-                    Try again in a minute or paste a shorter contract.
+                  <p className="text-xs text-stone-600 mb-3 leading-relaxed">
+                    The request was retried across the fallback chain and every provider returned
+                    an error. Common causes are NIM free-tier rate limit, a temporarily DEGRADED
+                    model, or a contract that's too long. Try again in a minute, or paste a
+                    shorter contract.
                   </p>
                   {scanResult.attempts && scanResult.attempts.length > 0 && (
                     <details className="text-xs">
-                      <summary className="cursor-pointer text-gray-700">Attempts ({scanResult.attempts.length})</summary>
-                      <pre className="mt-2 whitespace-pre-wrap text-gray-600">{JSON.stringify(scanResult.attempts, null, 2)}</pre>
+                      <summary className="cursor-pointer text-stone-700">
+                        Attempts ({scanResult.attempts.length})
+                      </summary>
+                      <pre className="mt-2 whitespace-pre-wrap text-stone-600 font-mono">
+                        {JSON.stringify(scanResult.attempts, null, 2)}
+                      </pre>
                     </details>
                   )}
                 </div>
               )}
               {scanResult?.report && (
                 <div>
-                  <div className="text-xs text-gray-600 mb-2 flex flex-wrap gap-2">
+                  <div className="text-xs text-stone-600 mb-3 flex flex-wrap gap-x-2 gap-y-1">
                     <span>
-                      Scanned by <span className="font-semibold text-emerald-700">{usedLabel ?? scanResult.model_used}</span>
+                      Scanned by{" "}
+                      <span className="font-semibold text-emerald-700">
+                        {usedLabel ?? scanResult.model_used}
+                      </span>
                     </span>
                     {scanResult.used_fallback && requestedLabel && (
                       <span className="text-amber-700">
-                        (fell back from {requestedLabel} — primary was rate-limited)
+                        (fell back from {requestedLabel}, primary was rate-limited)
                       </span>
                     )}
                   </div>
-                  <pre className="text-xs whitespace-pre-wrap">{JSON.stringify(scanResult.report, null, 2)}</pre>
+                  <pre className="text-xs whitespace-pre-wrap font-mono text-stone-800">
+                    {JSON.stringify(scanResult.report, null, 2)}
+                  </pre>
                 </div>
               )}
             </div>
           </div>
+
         </div>
+
       </div>
     </div>
   );
