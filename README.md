@@ -4,6 +4,14 @@ A self-renewing benchmark for evaluating LLM performance at detecting smart
 contract vulnerabilities. Built for SC Audit Studio at That Crypto Hackathon
 (Turku, May 2026).
 
+**Live demo:** [sc-audit-benchmark.vercel.app](https://sc-audit-benchmark.vercel.app/)
+
+- [Leaderboard](https://sc-audit-benchmark.vercel.app/) — cost-adjusted and pure-quality views
+- [Per-vuln breakdown](https://sc-audit-benchmark.vercel.app/breakdown) — heatmap of detection rate by model × SWC class
+- [Playground](https://sc-audit-benchmark.vercel.app/playground) — paste a Solidity contract, pick a model, get a structured scan report
+
+The playground hits the same free NIM / OpenRouter tiers the benchmark itself uses. No rate-limiting yet, so be gentle if you're sharing the link widely.
+
 ## Results
 
 Three open-weight model philosophies tested across 15 LLM-generated vulnerable
