@@ -34,24 +34,17 @@ export default function Breakdown() {
 
   if (!data) {
     return (
-      <div className="min-h-screen bg-stone-50">
+      <div className="min-h-screen">
         <div className="max-w-6xl mx-auto px-6 py-10 text-stone-500">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-stone-50">
+    <div className="min-h-screen">
       <div className="max-w-6xl mx-auto px-6 py-10">
 
         <header className="mb-10">
-          <div className="flex items-center justify-between mb-6 text-sm">
-            <a href="/" className="text-stone-500 hover:text-stone-900">← Leaderboard</a>
-            <nav className="flex gap-5 text-stone-600">
-              <a href="/analysis" className="hover:text-stone-900">Why these results</a>
-              <a href="/playground" className="hover:text-stone-900">Playground</a>
-            </nav>
-          </div>
           <h1 className="text-4xl font-bold text-stone-900 leading-tight tracking-tight mb-3">
             Per-vulnerability breakdown
           </h1>
