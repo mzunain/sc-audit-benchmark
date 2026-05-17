@@ -1,0 +1,52 @@
+{
+  "benchmark_version": "generative-solidity-vuln-v1",
+  "total_contracts": 15,
+  "models": {
+    "nim:qwen/qwen3-coder-480b-a35b-instruct": {
+      "detection_rate": 71.4,
+      "swc_id_accuracy": 57.1,
+      "severity_score": 53.6,
+      "location_score": 82.1,
+      "avg_explanation_quality": 4.14,
+      "false_positives_per_scan": 1.5,
+      "quality_score": 57.5,
+      "total_scan_cost_usd": 0.0034,
+      "cost_adjusted_score": 17041.6,
+      "scenarios_evaluated": 14
+    },
+    "nim:minimaxai/minimax-m2.7": {
+      "detection_rate": 64.3,
+      "swc_id_accuracy": 50.0,
+      "severity_score": 42.9,
+      "location_score": 67.9,
+      "avg_explanation_quality": 3.86,
+      "false_positives_per_scan": 1.86,
+      "quality_score": 44.6,
+      "total_scan_cost_usd": 0.0237,
+      "cost_adjusted_score": 1882.4,
+      "scenarios_evaluated": 14
+    },
+    "nim:stepfun-ai/step-3.5-flash": {
+      "detection_rate": 18.2,
+      "swc_id_accuracy": 18.2,
+      "severity_score": 18.2,
+      "location_score": 18.2,
+      "avg_explanation_quality": 1.82,
+      "false_positives_per_scan": 0.0,
+      "quality_score": 18.2,
+      "total_scan_cost_usd": 0.0357,
+      "cost_adjusted_score": 508.8,
+      "scenarios_evaluated": 11
+    }
+  },
+  "winners": {
+    "highest_quality": {
+      "model": "nim:qwen/qwen3-coder-480b-a35b-instruct",
+      "score": 57.5
+    },
+    "best_value": {
+      "model": "nim:qwen/qwen3-coder-480b-a35b-instruct",
+      "score": 17041.6
+    }
+  }
+}

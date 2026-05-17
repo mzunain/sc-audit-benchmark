@@ -1,0 +1,11 @@
+{
+  "contract_id": "contract_001",
+  "template_id": "TOKEN-BASIC",
+  "vulnerability": {
+    "swc_id": "SWC-107",
+    "name": "Reentrancy",
+    "severity": "High"
+  },
+  "generator_model": "nim:qwen/qwen3-coder-480b-a35b-instruct",
+  "generation_cost_usd": 0.00021659999999999998
+}

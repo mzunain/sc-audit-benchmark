@@ -1,0 +1,11 @@
+{
+  "contract_id": "contract_010",
+  "template_id": "STAKING-REWARDS",
+  "vulnerability": {
+    "swc_id": "SWC-101",
+    "name": "Integer Overflow/Underflow",
+    "severity": "High"
+  },
+  "generator_model": "nim:qwen/qwen3-coder-480b-a35b-instruct",
+  "generation_cost_usd": 0.00024239999999999998
+}
