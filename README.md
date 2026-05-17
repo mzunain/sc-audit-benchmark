@@ -4,6 +4,31 @@ A self-renewing benchmark for evaluating LLM performance at detecting smart
 contract vulnerabilities. Built for SC Audit Studio at That Crypto Hackathon
 (Turku, May 2026).
 
+## Results
+
+Three open-weight model philosophies tested across 15 LLM-generated vulnerable
+contracts and 8 SWC vulnerability classes. Judge is `nim:meta/llama-3.3-70b-instruct`,
+kept outside the scanner pool to avoid self-judging bias.
+
+| Model | Philosophy | Detection | Quality | Cost (15 scans) | Cost-adjusted |
+|---|---|---|---|---|---|
+| 🏆 **Qwen3-Coder 480B** | Code specialist | **71.4%** | **57.5** | **$0.0034** | **17,041** |
+| MiniMax M2.7 (230B) | Code + reasoning hybrid | 64.3% | 44.6 | $0.0237 | 1,882 |
+| Step-3.5-Flash (200B) | Pure reasoning | 18.2% | 18.2 | $0.0357 | 509 |
+
+Three takeaways for audit firms:
+
+1. **Code-tuning beats pure reasoning** for Solidity vulnerability detection — 4× detection rate at 1/10th the cost.
+2. **Cost wins.** Qwen3-Coder is also the cheapest of the three at commercial pricing. The winner on quality is also the winner on dollars-per-bug.
+3. **Universal blind spot.** None of the three reliably catch transaction-order dependence (SWC-114). Front-running auditing still needs a human.
+
+The full benchmark itself ran on free NVIDIA NIM credits. Costs above are
+**commercial list prices**, computed from per-model per-million-token rates × actual
+token usage — i.e., what an audit firm deploying these in production would pay.
+
+See [DEMO.md](DEMO.md) for the 5-minute demo flow and [SLIDES.md](SLIDES.md) for
+the deck content.
+
 ## How It Works (3-Stage Pipeline)
 
 1. **GENERATOR**: LLM injects known vulnerabilities into clean Solidity contracts
@@ -62,6 +87,23 @@ export NVIDIA_API_KEY=...
 npm run dev
 # Open http://localhost:3000
 ```
+
+## Dashboard
+
+```bash
+cd dashboard && npm install
+set -a && source ../.env && set +a
+npm run dev
+# http://localhost:3000
+```
+
+Three pages:
+- `/` — leaderboard with cost-adjusted and pure-quality views, philosophy chips, winner callout
+- `/breakdown` — per-model per-SWC detection heatmap
+- `/playground` — paste a Solidity contract, pick a model, get a structured scan report
+
+The playground route needs `OPENROUTER_API_KEY` and `NVIDIA_API_KEY` in the
+Next.js process env (sourced from `../.env` as shown).
 
 ## Default Lineup
 
