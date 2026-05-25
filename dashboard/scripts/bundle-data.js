@@ -33,6 +33,13 @@ if (!fs.existsSync(presentation)) {
 }
 copy(presentation, path.join(PUBLIC_DATA, "presentation.json"));
 
+const staticBaseline = path.join(REPO_ROOT, "output", "static_baseline.json");
+if (fs.existsSync(staticBaseline)) {
+  copy(staticBaseline, path.join(PUBLIC_DATA, "static_baseline.json"));
+} else {
+  console.warn("  output/static_baseline.json not found — run `python scripts/static_baseline.py` for the static comparator.");
+}
+
 const judgmentsDir = path.join(REPO_ROOT, "output", "judge_scores");
 const judgmentFiles = [];
 if (fs.existsSync(judgmentsDir)) {

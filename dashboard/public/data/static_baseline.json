@@ -1,0 +1,2043 @@
+{
+  "title": "Static Analyzer Baselines",
+  "baseline_id": "static-analyzer-baselines-v2",
+  "generated_at": "2026-05-25T19:29:32.769914+00:00",
+  "primary_comparator_id": "heuristic",
+  "summary": {
+    "detection_rate": 66.7,
+    "false_positives_per_contract": 0.87,
+    "findings_per_contract": 1.8,
+    "contracts_scanned": 15,
+    "swc_coverage": {
+      "SWC-101": {
+        "found": 0,
+        "total": 2
+      },
+      "SWC-104": {
+        "found": 2,
+        "total": 2
+      },
+      "SWC-105": {
+        "found": 2,
+        "total": 2
+      },
+      "SWC-106": {
+        "found": 2,
+        "total": 2
+      },
+      "SWC-107": {
+        "found": 1,
+        "total": 2
+      },
+      "SWC-112": {
+        "found": 2,
+        "total": 2
+      },
+      "SWC-114": {
+        "found": 0,
+        "total": 2
+      },
+      "SWC-128": {
+        "found": 1,
+        "total": 1
+      }
+    }
+  },
+  "tools": [
+    {
+      "id": "heuristic",
+      "name": "Heuristic baseline",
+      "available": true,
+      "adapter": "built-in",
+      "status": "ran"
+    },
+    {
+      "id": "slither",
+      "name": "Slither",
+      "available": true,
+      "adapter": "json-adapter-ready",
+      "status": "ready"
+    },
+    {
+      "id": "aderyn",
+      "name": "Aderyn",
+      "available": true,
+      "adapter": "json-adapter-ready",
+      "status": "ready"
+    },
+    {
+      "id": "mythril",
+      "name": "Mythril",
+      "available": false,
+      "adapter": "planned",
+      "status": "planned"
+    }
+  ],
+  "comparators": [
+    {
+      "id": "heuristic",
+      "name": "Heuristic static baseline",
+      "available": true,
+      "adapter": "built-in",
+      "status": "ran",
+      "summary": {
+        "detection_rate": 66.7,
+        "false_positives_per_contract": 0.87,
+        "findings_per_contract": 1.8,
+        "contracts_scanned": 15,
+        "swc_coverage": {
+          "SWC-101": {
+            "found": 0,
+            "total": 2
+          },
+          "SWC-104": {
+            "found": 2,
+            "total": 2
+          },
+          "SWC-105": {
+            "found": 2,
+            "total": 2
+          },
+          "SWC-106": {
+            "found": 2,
+            "total": 2
+          },
+          "SWC-107": {
+            "found": 1,
+            "total": 2
+          },
+          "SWC-112": {
+            "found": 2,
+            "total": 2
+          },
+          "SWC-114": {
+            "found": 0,
+            "total": 2
+          },
+          "SWC-128": {
+            "found": 1,
+            "total": 1
+          }
+        }
+      },
+      "scans": [
+        {
+          "contract_id": "contract_001",
+          "ground_truth": {
+            "swc_id": "SWC-107",
+            "name": "Reentrancy",
+            "severity": "High"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-107",
+              "name": "Reentrancy",
+              "severity": "High",
+              "detector_id": "external-call-before-state-update",
+              "location": "function added",
+              "line": 28,
+              "confidence": "high",
+              "explanation": "External call appears before a later state write in the same function."
+            },
+            {
+              "swc_id": "SWC-105",
+              "name": "Unprotected Ether Withdrawal",
+              "severity": "High",
+              "detector_id": "value-transfer-without-access-control",
+              "location": "function added",
+              "line": 28,
+              "confidence": "medium",
+              "explanation": "Function transfers value or destroys funds without obvious owner/admin gating."
+            },
+            {
+              "swc_id": "SWC-114",
+              "name": "Transaction Order Dependence",
+              "severity": "Medium",
+              "detector_id": "allowance-approval-race",
+              "location": "function approve",
+              "line": 35,
+              "confidence": "medium",
+              "explanation": "Allowance is overwritten directly, which can expose approve race/front-running behavior."
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_002",
+          "ground_truth": {
+            "swc_id": "SWC-101",
+            "name": "Integer Overflow/Underflow",
+            "severity": "High"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-105",
+              "name": "Unprotected Ether Withdrawal",
+              "severity": "High",
+              "detector_id": "value-transfer-without-access-control",
+              "location": "function withdraw",
+              "line": 21,
+              "confidence": "medium",
+              "explanation": "Function transfers value or destroys funds without obvious owner/admin gating."
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_003",
+          "ground_truth": {
+            "swc_id": "SWC-104",
+            "name": "Unchecked Call Return Value",
+            "severity": "Medium"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-104",
+              "name": "Unchecked Call Return Value",
+              "severity": "Medium",
+              "detector_id": "unchecked-low-level-call",
+              "location": "function execute",
+              "line": 32,
+              "confidence": "medium",
+              "explanation": "Low-level call result is not clearly checked with require()."
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_004",
+          "ground_truth": {
+            "swc_id": "SWC-105",
+            "name": "Unprotected Ether Withdrawal",
+            "severity": "Critical"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-105",
+              "name": "Unprotected Ether Withdrawal",
+              "severity": "High",
+              "detector_id": "value-transfer-without-access-control",
+              "location": "function withdrawRefund",
+              "line": 33,
+              "confidence": "medium",
+              "explanation": "Function transfers value or destroys funds without obvious owner/admin gating."
+            },
+            {
+              "swc_id": "SWC-105",
+              "name": "Unprotected Ether Withdrawal",
+              "severity": "High",
+              "detector_id": "value-transfer-without-access-control",
+              "location": "function withdrawFunds",
+              "line": 39,
+              "confidence": "medium",
+              "explanation": "Function transfers value or destroys funds without obvious owner/admin gating."
+            },
+            {
+              "swc_id": "SWC-105",
+              "name": "Unprotected Ether Withdrawal",
+              "severity": "High",
+              "detector_id": "value-transfer-without-access-control",
+              "location": "function withdraw",
+              "line": 53,
+              "confidence": "medium",
+              "explanation": "Function transfers value or destroys funds without obvious owner/admin gating."
+            },
+            {
+              "swc_id": "SWC-105",
+              "name": "Unprotected Ether Withdrawal",
+              "severity": "High",
+              "detector_id": "value-transfer-without-access-control",
+              "location": "function emergencyWithdraw",
+              "line": 62,
+              "confidence": "medium",
+              "explanation": "Function transfers value or destroys funds without obvious owner/admin gating."
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_005",
+          "ground_truth": {
+            "swc_id": "SWC-106",
+            "name": "Unprotected SELFDESTRUCT",
+            "severity": "Critical"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-105",
+              "name": "Unprotected Ether Withdrawal",
+              "severity": "High",
+              "detector_id": "value-transfer-without-access-control",
+              "location": "function emergencyWithdraw",
+              "line": 29,
+              "confidence": "medium",
+              "explanation": "Function transfers value or destroys funds without obvious owner/admin gating."
+            },
+            {
+              "swc_id": "SWC-106",
+              "name": "Unprotected SELFDESTRUCT",
+              "severity": "High",
+              "detector_id": "unprotected-selfdestruct",
+              "location": "function emergencyWithdraw",
+              "line": 29,
+              "confidence": "high",
+              "explanation": "selfdestruct is reachable without obvious owner/admin gating."
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_006",
+          "ground_truth": {
+            "swc_id": "SWC-112",
+            "name": "Delegatecall to Untrusted Callee",
+            "severity": "Critical"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-112",
+              "name": "Delegatecall to Untrusted Callee",
+              "severity": "High",
+              "detector_id": "delegatecall-target-review",
+              "location": "function upgrade",
+              "line": 26,
+              "confidence": "medium",
+              "explanation": "delegatecall is present; target trust boundary requires review."
+            },
+            {
+              "swc_id": "SWC-114",
+              "name": "Transaction Order Dependence",
+              "severity": "Medium",
+              "detector_id": "allowance-approval-race",
+              "location": "function approve",
+              "line": 31,
+              "confidence": "medium",
+              "explanation": "Allowance is overwritten directly, which can expose approve race/front-running behavior."
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_007",
+          "ground_truth": {
+            "swc_id": "SWC-114",
+            "name": "Transaction Order Dependence",
+            "severity": "Medium"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-105",
+              "name": "Unprotected Ether Withdrawal",
+              "severity": "High",
+              "detector_id": "value-transfer-without-access-control",
+              "location": "function withdraw",
+              "line": 20,
+              "confidence": "medium",
+              "explanation": "Function transfers value or destroys funds without obvious owner/admin gating."
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_008",
+          "ground_truth": {
+            "swc_id": "SWC-128",
+            "name": "DoS with Block Gas Limit",
+            "severity": "Medium"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-128",
+              "name": "DoS with Block Gas Limit",
+              "severity": "Medium",
+              "detector_id": "unbounded-loop-over-dynamic-data",
+              "location": "function processPendingTransactions",
+              "line": 41,
+              "confidence": "medium",
+              "explanation": "Loop appears bounded by dynamic collection length and may become too expensive."
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_009",
+          "ground_truth": {
+            "swc_id": "SWC-107",
+            "name": "Reentrancy",
+            "severity": "High"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-105",
+              "name": "Unprotected Ether Withdrawal",
+              "severity": "High",
+              "detector_id": "value-transfer-without-access-control",
+              "location": "function withdrawRefund",
+              "line": 33,
+              "confidence": "medium",
+              "explanation": "Function transfers value or destroys funds without obvious owner/admin gating."
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_010",
+          "ground_truth": {
+            "swc_id": "SWC-101",
+            "name": "Integer Overflow/Underflow",
+            "severity": "High"
+          },
+          "findings": []
+        },
+        {
+          "contract_id": "contract_011",
+          "ground_truth": {
+            "swc_id": "SWC-104",
+            "name": "Unchecked Call Return Value",
+            "severity": "Medium"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-107",
+              "name": "Reentrancy",
+              "severity": "High",
+              "detector_id": "external-call-before-state-update",
+              "location": "function emergencyWithdraw",
+              "line": 40,
+              "confidence": "high",
+              "explanation": "External call appears before a later state write in the same function."
+            },
+            {
+              "swc_id": "SWC-104",
+              "name": "Unchecked Call Return Value",
+              "severity": "Medium",
+              "detector_id": "unchecked-low-level-call",
+              "location": "function emergencyWithdraw",
+              "line": 40,
+              "confidence": "medium",
+              "explanation": "Low-level call result is not clearly checked with require()."
+            },
+            {
+              "swc_id": "SWC-105",
+              "name": "Unprotected Ether Withdrawal",
+              "severity": "High",
+              "detector_id": "value-transfer-without-access-control",
+              "location": "function withdrawToEthAddress",
+              "line": 30,
+              "confidence": "medium",
+              "explanation": "Function transfers value or destroys funds without obvious owner/admin gating."
+            },
+            {
+              "swc_id": "SWC-105",
+              "name": "Unprotected Ether Withdrawal",
+              "severity": "High",
+              "detector_id": "value-transfer-without-access-control",
+              "location": "function emergencyWithdraw",
+              "line": 40,
+              "confidence": "medium",
+              "explanation": "Function transfers value or destroys funds without obvious owner/admin gating."
+            },
+            {
+              "swc_id": "SWC-114",
+              "name": "Transaction Order Dependence",
+              "severity": "Medium",
+              "detector_id": "allowance-approval-race",
+              "location": "function approve",
+              "line": 24,
+              "confidence": "medium",
+              "explanation": "Allowance is overwritten directly, which can expose approve race/front-running behavior."
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_012",
+          "ground_truth": {
+            "swc_id": "SWC-105",
+            "name": "Unprotected Ether Withdrawal",
+            "severity": "Critical"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-105",
+              "name": "Unprotected Ether Withdrawal",
+              "severity": "High",
+              "detector_id": "value-transfer-without-access-control",
+              "location": "function withdraw",
+              "line": 20,
+              "confidence": "medium",
+              "explanation": "Function transfers value or destroys funds without obvious owner/admin gating."
+            },
+            {
+              "swc_id": "SWC-105",
+              "name": "Unprotected Ether Withdrawal",
+              "severity": "High",
+              "detector_id": "value-transfer-without-access-control",
+              "location": "function withdrawAll",
+              "line": 31,
+              "confidence": "medium",
+              "explanation": "Function transfers value or destroys funds without obvious owner/admin gating."
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_013",
+          "ground_truth": {
+            "swc_id": "SWC-106",
+            "name": "Unprotected SELFDESTRUCT",
+            "severity": "Critical"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-105",
+              "name": "Unprotected Ether Withdrawal",
+              "severity": "High",
+              "detector_id": "value-transfer-without-access-control",
+              "location": "function kill",
+              "line": 37,
+              "confidence": "medium",
+              "explanation": "Function transfers value or destroys funds without obvious owner/admin gating."
+            },
+            {
+              "swc_id": "SWC-106",
+              "name": "Unprotected SELFDESTRUCT",
+              "severity": "High",
+              "detector_id": "unprotected-selfdestruct",
+              "location": "function kill",
+              "line": 37,
+              "confidence": "high",
+              "explanation": "selfdestruct is reachable without obvious owner/admin gating."
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_014",
+          "ground_truth": {
+            "swc_id": "SWC-112",
+            "name": "Delegatecall to Untrusted Callee",
+            "severity": "Critical"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-105",
+              "name": "Unprotected Ether Withdrawal",
+              "severity": "High",
+              "detector_id": "value-transfer-without-access-control",
+              "location": "function withdrawRefund",
+              "line": 31,
+              "confidence": "medium",
+              "explanation": "Function transfers value or destroys funds without obvious owner/admin gating."
+            },
+            {
+              "swc_id": "SWC-112",
+              "name": "Delegatecall to Untrusted Callee",
+              "severity": "High",
+              "detector_id": "delegatecall-target-review",
+              "location": "function executeUpgrade",
+              "line": 36,
+              "confidence": "medium",
+              "explanation": "delegatecall is present; target trust boundary requires review."
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_015",
+          "ground_truth": {
+            "swc_id": "SWC-114",
+            "name": "Transaction Order Dependence",
+            "severity": "Medium"
+          },
+          "findings": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "id": "slither",
+      "name": "Slither",
+      "available": true,
+      "adapter": "json-adapter-ready",
+      "status": "ran",
+      "summary": {
+        "detection_rate": 66.7,
+        "false_positives_per_contract": 1.67,
+        "findings_per_contract": 2.73,
+        "contracts_scanned": 15,
+        "swc_coverage": {
+          "SWC-101": {
+            "found": 2,
+            "total": 2
+          },
+          "SWC-104": {
+            "found": 1,
+            "total": 2
+          },
+          "SWC-105": {
+            "found": 1,
+            "total": 2
+          },
+          "SWC-106": {
+            "found": 2,
+            "total": 2
+          },
+          "SWC-107": {
+            "found": 2,
+            "total": 2
+          },
+          "SWC-112": {
+            "found": 2,
+            "total": 2
+          },
+          "SWC-114": {
+            "found": 0,
+            "total": 2
+          },
+          "SWC-128": {
+            "found": 0,
+            "total": 1
+          }
+        }
+      },
+      "scans": [
+        {
+          "contract_id": "contract_001",
+          "ground_truth": {
+            "swc_id": "SWC-107",
+            "name": "Reentrancy",
+            "severity": "High"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-107",
+              "name": "Reentrancy",
+              "severity": "High",
+              "detector_id": "reentrancy-eth",
+              "location": "withdraw",
+              "line": 24,
+              "confidence": "medium",
+              "explanation": "Reentrancy in Token.withdraw(uint256) (data/generated_contracts/contract_001.sol#24-32): \tExternal calls: \t- (sent,None) = msg.sender.call{value: amount}() (data/generated_contracts/contract_001.sol#28) \tState variables written after the call(s): \t- balanceOf[msg.sender] -= amount (data/generated_contracts/contract_001.sol#31) \tToken.balanceOf (data/generated_contracts/contract_001.sol#7) can be used in cross function reentrancies: \t- Token.balanceOf (data/generated_contracts/contract_001.sol#7) \t- Token.constructor(string,uint256) (data/generated_contracts/contract_001.sol#10-14) \t- Token.transfer(address,uint256) (data/generated_contracts/contract_001.sol#16-21) \t- Token.withdraw(uint256) (data/generated_contracts/contract_001.sol#24-32)",
+              "tool": "slither"
+            },
+            {
+              "swc_id": "SWC-101",
+              "name": "Integer Overflow/Underflow",
+              "severity": "Informational",
+              "detector_id": "solc-version",
+              "location": "^0.8.0",
+              "line": 2,
+              "confidence": "high",
+              "explanation": "Version constraint ^0.8.0 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html) \t- FullInlinerNonExpressionSplitArgumentEvaluationOrder \t- MissingSideEffectsOnSelectorAccess \t- AbiReencodingHeadOverflowWithStaticArrayCleanup \t- DirtyBytesArrayToStorage \t- DataLocationChangeInInternalOverride \t- NestedCalldataArrayAbiReencodingSizeValidation \t- SignedImmutables \t- ABIDecodeTwoDimensionalArrayMemory \t- KeccakCaching. It is used by: \t- ^0.8.0 (data/generated_contracts/contract_001.sol#2)",
+              "tool": "slither"
+            },
+            {
+              "swc_id": "SWC-104",
+              "name": "Unchecked Call Return Value",
+              "severity": "Informational",
+              "detector_id": "low-level-calls",
+              "location": "withdraw",
+              "line": 24,
+              "confidence": "high",
+              "explanation": "Low level call in Token.withdraw(uint256) (data/generated_contracts/contract_001.sol#24-32): \t- (sent,None) = msg.sender.call{value: amount}() (data/generated_contracts/contract_001.sol#28)",
+              "tool": "slither"
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_002",
+          "ground_truth": {
+            "swc_id": "SWC-101",
+            "name": "Integer Overflow/Underflow",
+            "severity": "High"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-101",
+              "name": "Integer Overflow/Underflow",
+              "severity": "Informational",
+              "detector_id": "solc-version",
+              "location": "^0.8.0",
+              "line": 2,
+              "confidence": "high",
+              "explanation": "Version constraint ^0.8.0 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html) \t- FullInlinerNonExpressionSplitArgumentEvaluationOrder \t- MissingSideEffectsOnSelectorAccess \t- AbiReencodingHeadOverflowWithStaticArrayCleanup \t- DirtyBytesArrayToStorage \t- DataLocationChangeInInternalOverride \t- NestedCalldataArrayAbiReencodingSizeValidation \t- SignedImmutables \t- ABIDecodeTwoDimensionalArrayMemory \t- KeccakCaching. It is used by: \t- ^0.8.0 (data/generated_contracts/contract_002.sol#2)",
+              "tool": "slither"
+            },
+            {
+              "swc_id": "SWC-104",
+              "name": "Unchecked Call Return Value",
+              "severity": "Informational",
+              "detector_id": "low-level-calls",
+              "location": "withdraw",
+              "line": 18,
+              "confidence": "high",
+              "explanation": "Low level call in Vault.withdraw(uint256) (data/generated_contracts/contract_002.sol#18-23): \t- (success,None) = msg.sender.call{value: amount}() (data/generated_contracts/contract_002.sol#21)",
+              "tool": "slither"
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_003",
+          "ground_truth": {
+            "swc_id": "SWC-104",
+            "name": "Unchecked Call Return Value",
+            "severity": "Medium"
+          },
+          "findings": []
+        },
+        {
+          "contract_id": "contract_004",
+          "ground_truth": {
+            "swc_id": "SWC-105",
+            "name": "Unprotected Ether Withdrawal",
+            "severity": "Critical"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-105",
+              "name": "Unprotected Ether Withdrawal",
+              "severity": "High",
+              "detector_id": "arbitrary-send-eth",
+              "location": "emergencyWithdraw",
+              "line": 60,
+              "confidence": "medium",
+              "explanation": "Auction.emergencyWithdraw() (data/generated_contracts/contract_004.sol#60-63) sends eth to arbitrary user \tDangerous calls: \t- address(msg.sender).transfer(address(this).balance) (data/generated_contracts/contract_004.sol#62)",
+              "tool": "slither"
+            },
+            {
+              "swc_id": "SWC-105",
+              "name": "Unprotected Ether Withdrawal",
+              "severity": "High",
+              "detector_id": "arbitrary-send-eth",
+              "location": "withdraw",
+              "line": 50,
+              "confidence": "medium",
+              "explanation": "Auction.withdraw() (data/generated_contracts/contract_004.sol#50-54) sends eth to arbitrary user \tDangerous calls: \t- address(msg.sender).transfer(address(this).balance) (data/generated_contracts/contract_004.sol#53)",
+              "tool": "slither"
+            },
+            {
+              "swc_id": "SWC-101",
+              "name": "Integer Overflow/Underflow",
+              "severity": "Informational",
+              "detector_id": "solc-version",
+              "location": "^0.8.0",
+              "line": 2,
+              "confidence": "high",
+              "explanation": "Version constraint ^0.8.0 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html) \t- FullInlinerNonExpressionSplitArgumentEvaluationOrder \t- MissingSideEffectsOnSelectorAccess \t- AbiReencodingHeadOverflowWithStaticArrayCleanup \t- DirtyBytesArrayToStorage \t- DataLocationChangeInInternalOverride \t- NestedCalldataArrayAbiReencodingSizeValidation \t- SignedImmutables \t- ABIDecodeTwoDimensionalArrayMemory \t- KeccakCaching. It is used by: \t- ^0.8.0 (data/generated_contracts/contract_004.sol#2)",
+              "tool": "slither"
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_005",
+          "ground_truth": {
+            "swc_id": "SWC-106",
+            "name": "Unprotected SELFDESTRUCT",
+            "severity": "Critical"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-106",
+              "name": "Unprotected SELFDESTRUCT",
+              "severity": "High",
+              "detector_id": "suicidal",
+              "location": "emergencyWithdraw",
+              "line": 28,
+              "confidence": "high",
+              "explanation": "Staking.emergencyWithdraw() (data/generated_contracts/contract_005.sol#28-30) allows anyone to destruct the contract",
+              "tool": "slither"
+            },
+            {
+              "swc_id": "SWC-101",
+              "name": "Integer Overflow/Underflow",
+              "severity": "Informational",
+              "detector_id": "solc-version",
+              "location": "^0.8.0",
+              "line": 2,
+              "confidence": "high",
+              "explanation": "Version constraint ^0.8.0 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html) \t- FullInlinerNonExpressionSplitArgumentEvaluationOrder \t- MissingSideEffectsOnSelectorAccess \t- AbiReencodingHeadOverflowWithStaticArrayCleanup \t- DirtyBytesArrayToStorage \t- DataLocationChangeInInternalOverride \t- NestedCalldataArrayAbiReencodingSizeValidation \t- SignedImmutables \t- ABIDecodeTwoDimensionalArrayMemory \t- KeccakCaching. It is used by: \t- ^0.8.0 (data/generated_contracts/contract_005.sol#2)",
+              "tool": "slither"
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_006",
+          "ground_truth": {
+            "swc_id": "SWC-112",
+            "name": "Delegatecall to Untrusted Callee",
+            "severity": "Critical"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-112",
+              "name": "Delegatecall to Untrusted Callee",
+              "severity": "High",
+              "detector_id": "controlled-delegatecall",
+              "location": "upgrade",
+              "line": 24,
+              "confidence": "medium",
+              "explanation": "Token.upgrade(address,bytes) (data/generated_contracts/contract_006.sol#24-28) uses delegatecall to a input-controlled function id \t- (success,None) = newImplementation.delegatecall(data) (data/generated_contracts/contract_006.sol#26)",
+              "tool": "slither"
+            },
+            {
+              "swc_id": "SWC-112",
+              "name": "Delegatecall to Untrusted Callee",
+              "severity": "Low",
+              "detector_id": "missing-zero-check",
+              "location": "newImplementation",
+              "line": 24,
+              "confidence": "medium",
+              "explanation": "Token.upgrade(address,bytes).newImplementation (data/generated_contracts/contract_006.sol#24) lacks a zero-check on : \t\t- (success,None) = newImplementation.delegatecall(data) (data/generated_contracts/contract_006.sol#26)",
+              "tool": "slither"
+            },
+            {
+              "swc_id": "SWC-101",
+              "name": "Integer Overflow/Underflow",
+              "severity": "Informational",
+              "detector_id": "solc-version",
+              "location": "^0.8.0",
+              "line": 2,
+              "confidence": "high",
+              "explanation": "Version constraint ^0.8.0 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html) \t- FullInlinerNonExpressionSplitArgumentEvaluationOrder \t- MissingSideEffectsOnSelectorAccess \t- AbiReencodingHeadOverflowWithStaticArrayCleanup \t- DirtyBytesArrayToStorage \t- DataLocationChangeInInternalOverride \t- NestedCalldataArrayAbiReencodingSizeValidation \t- SignedImmutables \t- ABIDecodeTwoDimensionalArrayMemory \t- KeccakCaching. It is used by: \t- ^0.8.0 (data/generated_contracts/contract_006.sol#2)",
+              "tool": "slither"
+            },
+            {
+              "swc_id": "SWC-112",
+              "name": "Delegatecall to Untrusted Callee",
+              "severity": "Informational",
+              "detector_id": "low-level-calls",
+              "location": "upgrade",
+              "line": 24,
+              "confidence": "high",
+              "explanation": "Low level call in Token.upgrade(address,bytes) (data/generated_contracts/contract_006.sol#24-28): \t- (success,None) = newImplementation.delegatecall(data) (data/generated_contracts/contract_006.sol#26)",
+              "tool": "slither"
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_007",
+          "ground_truth": {
+            "swc_id": "SWC-114",
+            "name": "Transaction Order Dependence",
+            "severity": "Medium"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-101",
+              "name": "Integer Overflow/Underflow",
+              "severity": "Informational",
+              "detector_id": "solc-version",
+              "location": "^0.8.0",
+              "line": 2,
+              "confidence": "high",
+              "explanation": "Version constraint ^0.8.0 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html) \t- FullInlinerNonExpressionSplitArgumentEvaluationOrder \t- MissingSideEffectsOnSelectorAccess \t- AbiReencodingHeadOverflowWithStaticArrayCleanup \t- DirtyBytesArrayToStorage \t- DataLocationChangeInInternalOverride \t- NestedCalldataArrayAbiReencodingSizeValidation \t- SignedImmutables \t- ABIDecodeTwoDimensionalArrayMemory \t- KeccakCaching. It is used by: \t- ^0.8.0 (data/generated_contracts/contract_007.sol#2)",
+              "tool": "slither"
+            },
+            {
+              "swc_id": "SWC-104",
+              "name": "Unchecked Call Return Value",
+              "severity": "Informational",
+              "detector_id": "low-level-calls",
+              "location": "withdraw",
+              "line": 17,
+              "confidence": "high",
+              "explanation": "Low level call in Vault.withdraw(uint256) (data/generated_contracts/contract_007.sol#17-22): \t- (success,None) = msg.sender.call{value: amount}() (data/generated_contracts/contract_007.sol#20)",
+              "tool": "slither"
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_008",
+          "ground_truth": {
+            "swc_id": "SWC-128",
+            "name": "DoS with Block Gas Limit",
+            "severity": "Medium"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-101",
+              "name": "Integer Overflow/Underflow",
+              "severity": "Informational",
+              "detector_id": "solc-version",
+              "location": "^0.8.0",
+              "line": 2,
+              "confidence": "high",
+              "explanation": "Version constraint ^0.8.0 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html) \t- FullInlinerNonExpressionSplitArgumentEvaluationOrder \t- MissingSideEffectsOnSelectorAccess \t- AbiReencodingHeadOverflowWithStaticArrayCleanup \t- DirtyBytesArrayToStorage \t- DataLocationChangeInInternalOverride \t- NestedCalldataArrayAbiReencodingSizeValidation \t- SignedImmutables \t- ABIDecodeTwoDimensionalArrayMemory \t- KeccakCaching. It is used by: \t- ^0.8.0 (data/generated_contracts/contract_008.sol#2)",
+              "tool": "slither"
+            },
+            {
+              "swc_id": "SWC-104",
+              "name": "Unchecked Call Return Value",
+              "severity": "Informational",
+              "detector_id": "low-level-calls",
+              "location": "execute",
+              "line": 25,
+              "confidence": "high",
+              "explanation": "Low level call in Multisig.execute(address,uint256,bytes) (data/generated_contracts/contract_008.sol#25-36): \t- (success,None) = target.call{value: value}(data) (data/generated_contracts/contract_008.sol#33)",
+              "tool": "slither"
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_009",
+          "ground_truth": {
+            "swc_id": "SWC-107",
+            "name": "Reentrancy",
+            "severity": "High"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-101",
+              "name": "Integer Overflow/Underflow",
+              "severity": "Informational",
+              "detector_id": "solc-version",
+              "location": "^0.8.0",
+              "line": 2,
+              "confidence": "high",
+              "explanation": "Version constraint ^0.8.0 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html) \t- FullInlinerNonExpressionSplitArgumentEvaluationOrder \t- MissingSideEffectsOnSelectorAccess \t- AbiReencodingHeadOverflowWithStaticArrayCleanup \t- DirtyBytesArrayToStorage \t- DataLocationChangeInInternalOverride \t- NestedCalldataArrayAbiReencodingSizeValidation \t- SignedImmutables \t- ABIDecodeTwoDimensionalArrayMemory \t- KeccakCaching. It is used by: \t- ^0.8.0 (data/generated_contracts/contract_009.sol#2)",
+              "tool": "slither"
+            },
+            {
+              "swc_id": "SWC-107",
+              "name": "Reentrancy",
+              "severity": "Informational",
+              "detector_id": "reentrancy-unlimited-gas",
+              "location": "withdrawRefund",
+              "line": 30,
+              "confidence": "medium",
+              "explanation": "Reentrancy in Auction.withdrawRefund() (data/generated_contracts/contract_009.sol#30-35): \tExternal calls: \t- address(msg.sender).transfer(amount) (data/generated_contracts/contract_009.sol#33) \tState variables written after the call(s): \t- refunds[msg.sender] = 0 (data/generated_contracts/contract_009.sol#34)",
+              "tool": "slither"
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_010",
+          "ground_truth": {
+            "swc_id": "SWC-101",
+            "name": "Integer Overflow/Underflow",
+            "severity": "High"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-101",
+              "name": "Integer Overflow/Underflow",
+              "severity": "Informational",
+              "detector_id": "solc-version",
+              "location": "^0.8.0",
+              "line": 2,
+              "confidence": "high",
+              "explanation": "Version constraint ^0.8.0 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html) \t- FullInlinerNonExpressionSplitArgumentEvaluationOrder \t- MissingSideEffectsOnSelectorAccess \t- AbiReencodingHeadOverflowWithStaticArrayCleanup \t- DirtyBytesArrayToStorage \t- DataLocationChangeInInternalOverride \t- NestedCalldataArrayAbiReencodingSizeValidation \t- SignedImmutables \t- ABIDecodeTwoDimensionalArrayMemory \t- KeccakCaching. It is used by: \t- ^0.8.0 (data/generated_contracts/contract_010.sol#2)",
+              "tool": "slither"
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_011",
+          "ground_truth": {
+            "swc_id": "SWC-104",
+            "name": "Unchecked Call Return Value",
+            "severity": "Medium"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-105",
+              "name": "Unprotected Ether Withdrawal",
+              "severity": "High",
+              "detector_id": "arbitrary-send-eth",
+              "location": "emergencyWithdraw",
+              "line": 35,
+              "confidence": "medium",
+              "explanation": "Token.emergencyWithdraw(address) (data/generated_contracts/contract_011.sol#35-43) sends eth to arbitrary user \tDangerous calls: \t- recipient.call{value: balance}() (data/generated_contracts/contract_011.sol#40)",
+              "tool": "slither"
+            },
+            {
+              "swc_id": "SWC-105",
+              "name": "Unprotected Ether Withdrawal",
+              "severity": "High",
+              "detector_id": "arbitrary-send-eth",
+              "location": "withdrawToEthAddress",
+              "line": 28,
+              "confidence": "medium",
+              "explanation": "Token.withdrawToEthAddress(address,uint256) (data/generated_contracts/contract_011.sol#28-33) sends eth to arbitrary user \tDangerous calls: \t- recipient.transfer(amount) (data/generated_contracts/contract_011.sol#30)",
+              "tool": "slither"
+            },
+            {
+              "swc_id": "SWC-107",
+              "name": "Reentrancy",
+              "severity": "High",
+              "detector_id": "reentrancy-eth",
+              "location": "emergencyWithdraw",
+              "line": 35,
+              "confidence": "medium",
+              "explanation": "Reentrancy in Token.emergencyWithdraw(address) (data/generated_contracts/contract_011.sol#35-43): \tExternal calls: \t- recipient.call{value: balance}() (data/generated_contracts/contract_011.sol#40) \tState variables written after the call(s): \t- balanceOf[recipient] = 0 (data/generated_contracts/contract_011.sol#41) \tToken.balanceOf (data/generated_contracts/contract_011.sol#7) can be used in cross function reentrancies: \t- Token.balanceOf (data/generated_contracts/contract_011.sol#7) \t- Token.constructor(string,uint256) (data/generated_contracts/contract_011.sol#10-14) \t- Token.emergencyWithdraw(address) (data/generated_contracts/contract_011.sol#35-43) \t- Token.transfer(address,uint256) (data/generated_contracts/contract_011.sol#16-21)",
+              "tool": "slither"
+            },
+            {
+              "swc_id": "SWC-104",
+              "name": "Unchecked Call Return Value",
+              "severity": "Medium",
+              "detector_id": "unchecked-lowlevel",
+              "location": "emergencyWithdraw",
+              "line": 35,
+              "confidence": "medium",
+              "explanation": "Token.emergencyWithdraw(address) (data/generated_contracts/contract_011.sol#35-43) ignores return value by recipient.call{value: balance}() (data/generated_contracts/contract_011.sol#40)",
+              "tool": "slither"
+            },
+            {
+              "swc_id": "SWC-105",
+              "name": "Unprotected Ether Withdrawal",
+              "severity": "Low",
+              "detector_id": "missing-zero-check",
+              "location": "recipient",
+              "line": 28,
+              "confidence": "medium",
+              "explanation": "Token.withdrawToEthAddress(address,uint256).recipient (data/generated_contracts/contract_011.sol#28) lacks a zero-check on : \t\t- recipient.transfer(amount) (data/generated_contracts/contract_011.sol#30)",
+              "tool": "slither"
+            },
+            {
+              "swc_id": "SWC-105",
+              "name": "Unprotected Ether Withdrawal",
+              "severity": "Low",
+              "detector_id": "missing-zero-check",
+              "location": "recipient",
+              "line": 35,
+              "confidence": "medium",
+              "explanation": "Token.emergencyWithdraw(address).recipient (data/generated_contracts/contract_011.sol#35) lacks a zero-check on : \t\t- recipient.call{value: balance}() (data/generated_contracts/contract_011.sol#40)",
+              "tool": "slither"
+            },
+            {
+              "swc_id": "SWC-101",
+              "name": "Integer Overflow/Underflow",
+              "severity": "Informational",
+              "detector_id": "solc-version",
+              "location": "^0.8.0",
+              "line": 2,
+              "confidence": "high",
+              "explanation": "Version constraint ^0.8.0 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html) \t- FullInlinerNonExpressionSplitArgumentEvaluationOrder \t- MissingSideEffectsOnSelectorAccess \t- AbiReencodingHeadOverflowWithStaticArrayCleanup \t- DirtyBytesArrayToStorage \t- DataLocationChangeInInternalOverride \t- NestedCalldataArrayAbiReencodingSizeValidation \t- SignedImmutables \t- ABIDecodeTwoDimensionalArrayMemory \t- KeccakCaching. It is used by: \t- ^0.8.0 (data/generated_contracts/contract_011.sol#2)",
+              "tool": "slither"
+            },
+            {
+              "swc_id": "SWC-104",
+              "name": "Unchecked Call Return Value",
+              "severity": "Informational",
+              "detector_id": "low-level-calls",
+              "location": "emergencyWithdraw",
+              "line": 35,
+              "confidence": "high",
+              "explanation": "Low level call in Token.emergencyWithdraw(address) (data/generated_contracts/contract_011.sol#35-43): \t- recipient.call{value: balance}() (data/generated_contracts/contract_011.sol#40)",
+              "tool": "slither"
+            },
+            {
+              "swc_id": "SWC-107",
+              "name": "Reentrancy",
+              "severity": "Informational",
+              "detector_id": "reentrancy-unlimited-gas",
+              "location": "withdrawToEthAddress",
+              "line": 28,
+              "confidence": "medium",
+              "explanation": "Reentrancy in Token.withdrawToEthAddress(address,uint256) (data/generated_contracts/contract_011.sol#28-33): \tExternal calls: \t- recipient.transfer(amount) (data/generated_contracts/contract_011.sol#30) \tEvent emitted after the call(s): \t- Withdrawal(recipient,amount) (data/generated_contracts/contract_011.sol#32)",
+              "tool": "slither"
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_012",
+          "ground_truth": {
+            "swc_id": "SWC-105",
+            "name": "Unprotected Ether Withdrawal",
+            "severity": "Critical"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-101",
+              "name": "Integer Overflow/Underflow",
+              "severity": "Informational",
+              "detector_id": "solc-version",
+              "location": "^0.8.0",
+              "line": 2,
+              "confidence": "high",
+              "explanation": "Version constraint ^0.8.0 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html) \t- FullInlinerNonExpressionSplitArgumentEvaluationOrder \t- MissingSideEffectsOnSelectorAccess \t- AbiReencodingHeadOverflowWithStaticArrayCleanup \t- DirtyBytesArrayToStorage \t- DataLocationChangeInInternalOverride \t- NestedCalldataArrayAbiReencodingSizeValidation \t- SignedImmutables \t- ABIDecodeTwoDimensionalArrayMemory \t- KeccakCaching. It is used by: \t- ^0.8.0 (data/generated_contracts/contract_012.sol#2)",
+              "tool": "slither"
+            },
+            {
+              "swc_id": "SWC-104",
+              "name": "Unchecked Call Return Value",
+              "severity": "Informational",
+              "detector_id": "low-level-calls",
+              "location": "withdraw",
+              "line": 16,
+              "confidence": "high",
+              "explanation": "Low level call in Vault.withdraw(uint256) (data/generated_contracts/contract_012.sol#16-22): \t- (success,None) = msg.sender.call{value: amount}() (data/generated_contracts/contract_012.sol#20)",
+              "tool": "slither"
+            },
+            {
+              "swc_id": "SWC-104",
+              "name": "Unchecked Call Return Value",
+              "severity": "Informational",
+              "detector_id": "low-level-calls",
+              "location": "withdrawAll",
+              "line": 28,
+              "confidence": "high",
+              "explanation": "Low level call in Vault.withdrawAll() (data/generated_contracts/contract_012.sol#28-33): \t- (success,None) = msg.sender.call{value: amount}() (data/generated_contracts/contract_012.sol#31)",
+              "tool": "slither"
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_013",
+          "ground_truth": {
+            "swc_id": "SWC-106",
+            "name": "Unprotected SELFDESTRUCT",
+            "severity": "Critical"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-106",
+              "name": "Unprotected SELFDESTRUCT",
+              "severity": "High",
+              "detector_id": "suicidal",
+              "location": "kill",
+              "line": 36,
+              "confidence": "high",
+              "explanation": "Multisig.kill() (data/generated_contracts/contract_013.sol#36-38) allows anyone to destruct the contract",
+              "tool": "slither"
+            },
+            {
+              "swc_id": "SWC-101",
+              "name": "Integer Overflow/Underflow",
+              "severity": "Informational",
+              "detector_id": "solc-version",
+              "location": "^0.8.0",
+              "line": 2,
+              "confidence": "high",
+              "explanation": "Version constraint ^0.8.0 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html) \t- FullInlinerNonExpressionSplitArgumentEvaluationOrder \t- MissingSideEffectsOnSelectorAccess \t- AbiReencodingHeadOverflowWithStaticArrayCleanup \t- DirtyBytesArrayToStorage \t- DataLocationChangeInInternalOverride \t- NestedCalldataArrayAbiReencodingSizeValidation \t- SignedImmutables \t- ABIDecodeTwoDimensionalArrayMemory \t- KeccakCaching. It is used by: \t- ^0.8.0 (data/generated_contracts/contract_013.sol#2)",
+              "tool": "slither"
+            },
+            {
+              "swc_id": "SWC-104",
+              "name": "Unchecked Call Return Value",
+              "severity": "Informational",
+              "detector_id": "low-level-calls",
+              "location": "execute",
+              "line": 24,
+              "confidence": "high",
+              "explanation": "Low level call in Multisig.execute(address,uint256,bytes) (data/generated_contracts/contract_013.sol#24-34): \t- (success,None) = target.call{value: value}(data) (data/generated_contracts/contract_013.sol#31)",
+              "tool": "slither"
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_014",
+          "ground_truth": {
+            "swc_id": "SWC-112",
+            "name": "Delegatecall to Untrusted Callee",
+            "severity": "Critical"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-112",
+              "name": "Delegatecall to Untrusted Callee",
+              "severity": "High",
+              "detector_id": "controlled-delegatecall",
+              "location": "executeUpgrade",
+              "line": 34,
+              "confidence": "medium",
+              "explanation": "Auction.executeUpgrade(address,bytes) (data/generated_contracts/contract_014.sol#34-38) uses delegatecall to a input-controlled function id \t- (success,None) = _implementation.delegatecall(_data) (data/generated_contracts/contract_014.sol#36)",
+              "tool": "slither"
+            },
+            {
+              "swc_id": "SWC-112",
+              "name": "Delegatecall to Untrusted Callee",
+              "severity": "Low",
+              "detector_id": "missing-zero-check",
+              "location": "_implementation",
+              "line": 34,
+              "confidence": "medium",
+              "explanation": "Auction.executeUpgrade(address,bytes)._implementation (data/generated_contracts/contract_014.sol#34) lacks a zero-check on : \t\t- (success,None) = _implementation.delegatecall(_data) (data/generated_contracts/contract_014.sol#36)",
+              "tool": "slither"
+            },
+            {
+              "swc_id": "SWC-101",
+              "name": "Integer Overflow/Underflow",
+              "severity": "Informational",
+              "detector_id": "solc-version",
+              "location": "^0.8.0",
+              "line": 2,
+              "confidence": "high",
+              "explanation": "Version constraint ^0.8.0 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html) \t- FullInlinerNonExpressionSplitArgumentEvaluationOrder \t- MissingSideEffectsOnSelectorAccess \t- AbiReencodingHeadOverflowWithStaticArrayCleanup \t- DirtyBytesArrayToStorage \t- DataLocationChangeInInternalOverride \t- NestedCalldataArrayAbiReencodingSizeValidation \t- SignedImmutables \t- ABIDecodeTwoDimensionalArrayMemory \t- KeccakCaching. It is used by: \t- ^0.8.0 (data/generated_contracts/contract_014.sol#2)",
+              "tool": "slither"
+            },
+            {
+              "swc_id": "SWC-112",
+              "name": "Delegatecall to Untrusted Callee",
+              "severity": "Informational",
+              "detector_id": "low-level-calls",
+              "location": "executeUpgrade",
+              "line": 34,
+              "confidence": "high",
+              "explanation": "Low level call in Auction.executeUpgrade(address,bytes) (data/generated_contracts/contract_014.sol#34-38): \t- (success,None) = _implementation.delegatecall(_data) (data/generated_contracts/contract_014.sol#36)",
+              "tool": "slither"
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_015",
+          "ground_truth": {
+            "swc_id": "SWC-114",
+            "name": "Transaction Order Dependence",
+            "severity": "Medium"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-101",
+              "name": "Integer Overflow/Underflow",
+              "severity": "Informational",
+              "detector_id": "solc-version",
+              "location": "^0.8.0",
+              "line": 2,
+              "confidence": "high",
+              "explanation": "Version constraint ^0.8.0 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html) \t- FullInlinerNonExpressionSplitArgumentEvaluationOrder \t- MissingSideEffectsOnSelectorAccess \t- AbiReencodingHeadOverflowWithStaticArrayCleanup \t- DirtyBytesArrayToStorage \t- DataLocationChangeInInternalOverride \t- NestedCalldataArrayAbiReencodingSizeValidation \t- SignedImmutables \t- ABIDecodeTwoDimensionalArrayMemory \t- KeccakCaching. It is used by: \t- ^0.8.0 (data/generated_contracts/contract_015.sol#2)",
+              "tool": "slither"
+            }
+          ]
+        }
+      ],
+      "errors": [
+        {
+          "contract_id": "contract_003",
+          "error": "'solc --version' running\n'solc /workspace/data/generated_contracts/contract_003.sol --combined-json abi,ast,bin,bin-runtime,srcmap,srcmap-runtime,userdoc,devdoc,hashes --allow-paths .,/workspace/data/generated_contracts' running\nCompilation warnings/errors on /workspace/data/generated_contracts/contract_003.sol:\nError: Undeclared identifier. Did you mean \"keccak256\"?\n  --> data/generated_contracts/contract_003.sol:25:26:\n   |\n25 |         bytes32 txHash = keccak250(abi.encode(target, value, data"
+        }
+      ]
+    },
+    {
+      "id": "aderyn",
+      "name": "Aderyn",
+      "available": true,
+      "adapter": "json-adapter-ready",
+      "status": "ran",
+      "summary": {
+        "detection_rate": 46.7,
+        "false_positives_per_contract": 0.73,
+        "findings_per_contract": 1.27,
+        "contracts_scanned": 15,
+        "swc_coverage": {
+          "SWC-101": {
+            "found": 0,
+            "total": 2
+          },
+          "SWC-104": {
+            "found": 1,
+            "total": 2
+          },
+          "SWC-105": {
+            "found": 2,
+            "total": 2
+          },
+          "SWC-106": {
+            "found": 1,
+            "total": 2
+          },
+          "SWC-107": {
+            "found": 2,
+            "total": 2
+          },
+          "SWC-112": {
+            "found": 1,
+            "total": 2
+          },
+          "SWC-114": {
+            "found": 0,
+            "total": 2
+          },
+          "SWC-128": {
+            "found": 0,
+            "total": 1
+          }
+        }
+      },
+      "scans": [
+        {
+          "contract_id": "contract_001",
+          "ground_truth": {
+            "swc_id": "SWC-107",
+            "name": "Reentrancy",
+            "severity": "High"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-105",
+              "name": "Unprotected Ether Withdrawal",
+              "severity": "Medium",
+              "detector_id": "eth-send-unchecked-address",
+              "location": "eth-send-unchecked-address",
+              "line": 24,
+              "confidence": "medium",
+              "explanation": "Consider introducing checks for `msg.sender` to ensure the recipient of the money is as intended.",
+              "tool": "aderyn"
+            },
+            {
+              "swc_id": "SWC-107",
+              "name": "Reentrancy",
+              "severity": "Medium",
+              "detector_id": "reentrancy-state-change",
+              "location": "reentrancy-state-change",
+              "line": 28,
+              "confidence": "medium",
+              "explanation": "Changing state after an external call can lead to re-entrancy attacks.Use the checks-effects-interactions pattern to avoid this issue.",
+              "tool": "aderyn"
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_002",
+          "ground_truth": {
+            "swc_id": "SWC-101",
+            "name": "Integer Overflow/Underflow",
+            "severity": "High"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-105",
+              "name": "Unprotected Ether Withdrawal",
+              "severity": "Medium",
+              "detector_id": "eth-send-unchecked-address",
+              "location": "eth-send-unchecked-address",
+              "line": 18,
+              "confidence": "medium",
+              "explanation": "Consider introducing checks for `msg.sender` to ensure the recipient of the money is as intended.",
+              "tool": "aderyn"
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_003",
+          "ground_truth": {
+            "swc_id": "SWC-104",
+            "name": "Unchecked Call Return Value",
+            "severity": "Medium"
+          },
+          "findings": []
+        },
+        {
+          "contract_id": "contract_004",
+          "ground_truth": {
+            "swc_id": "SWC-105",
+            "name": "Unprotected Ether Withdrawal",
+            "severity": "Critical"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-105",
+              "name": "Unprotected Ether Withdrawal",
+              "severity": "Medium",
+              "detector_id": "eth-send-unchecked-address",
+              "location": "eth-send-unchecked-address",
+              "line": 29,
+              "confidence": "medium",
+              "explanation": "Consider introducing checks for `msg.sender` to ensure the recipient of the money is as intended.",
+              "tool": "aderyn"
+            },
+            {
+              "swc_id": "SWC-104",
+              "name": "Unchecked Call Return Value",
+              "severity": "Medium",
+              "detector_id": "unsafe-erc20-operation",
+              "location": "unsafe-erc20-operation",
+              "line": 33,
+              "confidence": "medium",
+              "explanation": "ERC20 functions may not behave as expected. For example: return values are not always meaningful. It is recommended to use OpenZeppelin's SafeERC20 library.",
+              "tool": "aderyn"
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_005",
+          "ground_truth": {
+            "swc_id": "SWC-106",
+            "name": "Unprotected SELFDESTRUCT",
+            "severity": "Critical"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-106",
+              "name": "Unprotected SELFDESTRUCT",
+              "severity": "Medium",
+              "detector_id": "selfdestruct",
+              "location": "selfdestruct",
+              "line": 29,
+              "confidence": "medium",
+              "explanation": "Remove the `selfdestruct` instruction from the code.",
+              "tool": "aderyn"
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_006",
+          "ground_truth": {
+            "swc_id": "SWC-112",
+            "name": "Delegatecall to Untrusted Callee",
+            "severity": "Critical"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-105",
+              "name": "Unprotected Ether Withdrawal",
+              "severity": "Medium",
+              "detector_id": "contract-locks-ether",
+              "location": "contract-locks-ether",
+              "line": 4,
+              "confidence": "medium",
+              "explanation": "It appears that the contract includes a payable function to accept Ether but lacks a corresponding function to withdraw it, which leads to the Ether being locked in the contract. To resolve this issue, please implement a public or external function that allows for the withdrawal of Ether from the contract.",
+              "tool": "aderyn"
+            },
+            {
+              "swc_id": "SWC-112",
+              "name": "Delegatecall to Untrusted Callee",
+              "severity": "Medium",
+              "detector_id": "delegate-call-unchecked-address",
+              "location": "delegate-call-unchecked-address",
+              "line": 24,
+              "confidence": "medium",
+              "explanation": "Making a `delegatecall` to an arbitrary address without any checks is dangerous. Consider adding requirements on the target address.",
+              "tool": "aderyn"
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_007",
+          "ground_truth": {
+            "swc_id": "SWC-114",
+            "name": "Transaction Order Dependence",
+            "severity": "Medium"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-105",
+              "name": "Unprotected Ether Withdrawal",
+              "severity": "Medium",
+              "detector_id": "eth-send-unchecked-address",
+              "location": "eth-send-unchecked-address",
+              "line": 17,
+              "confidence": "medium",
+              "explanation": "Consider introducing checks for `msg.sender` to ensure the recipient of the money is as intended.",
+              "tool": "aderyn"
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_008",
+          "ground_truth": {
+            "swc_id": "SWC-128",
+            "name": "DoS with Block Gas Limit",
+            "severity": "Medium"
+          },
+          "findings": []
+        },
+        {
+          "contract_id": "contract_009",
+          "ground_truth": {
+            "swc_id": "SWC-107",
+            "name": "Reentrancy",
+            "severity": "High"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-105",
+              "name": "Unprotected Ether Withdrawal",
+              "severity": "Medium",
+              "detector_id": "eth-send-unchecked-address",
+              "location": "eth-send-unchecked-address",
+              "line": 30,
+              "confidence": "medium",
+              "explanation": "Consider introducing checks for `msg.sender` to ensure the recipient of the money is as intended.",
+              "tool": "aderyn"
+            },
+            {
+              "swc_id": "SWC-107",
+              "name": "Reentrancy",
+              "severity": "Medium",
+              "detector_id": "reentrancy-state-change",
+              "location": "reentrancy-state-change",
+              "line": 33,
+              "confidence": "medium",
+              "explanation": "Changing state after an external call can lead to re-entrancy attacks.Use the checks-effects-interactions pattern to avoid this issue.",
+              "tool": "aderyn"
+            },
+            {
+              "swc_id": "SWC-104",
+              "name": "Unchecked Call Return Value",
+              "severity": "Medium",
+              "detector_id": "unsafe-erc20-operation",
+              "location": "unsafe-erc20-operation",
+              "line": 33,
+              "confidence": "medium",
+              "explanation": "ERC20 functions may not behave as expected. For example: return values are not always meaningful. It is recommended to use OpenZeppelin's SafeERC20 library.",
+              "tool": "aderyn"
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_010",
+          "ground_truth": {
+            "swc_id": "SWC-101",
+            "name": "Integer Overflow/Underflow",
+            "severity": "High"
+          },
+          "findings": []
+        },
+        {
+          "contract_id": "contract_011",
+          "ground_truth": {
+            "swc_id": "SWC-104",
+            "name": "Unchecked Call Return Value",
+            "severity": "Medium"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-105",
+              "name": "Unprotected Ether Withdrawal",
+              "severity": "Medium",
+              "detector_id": "eth-send-unchecked-address",
+              "location": "eth-send-unchecked-address",
+              "line": 28,
+              "confidence": "medium",
+              "explanation": "Consider introducing checks for `msg.sender` to ensure the recipient of the money is as intended.",
+              "tool": "aderyn"
+            },
+            {
+              "swc_id": "SWC-107",
+              "name": "Reentrancy",
+              "severity": "Medium",
+              "detector_id": "reentrancy-state-change",
+              "location": "reentrancy-state-change",
+              "line": 40,
+              "confidence": "medium",
+              "explanation": "Changing state after an external call can lead to re-entrancy attacks.Use the checks-effects-interactions pattern to avoid this issue.",
+              "tool": "aderyn"
+            },
+            {
+              "swc_id": "SWC-104",
+              "name": "Unchecked Call Return Value",
+              "severity": "Medium",
+              "detector_id": "unchecked-low-level-call",
+              "location": "unchecked-low-level-call",
+              "line": 40,
+              "confidence": "medium",
+              "explanation": "The return value of the low-level call is not checked, so if the call fails, the Ether will be locked in the contract. If the low level is used to prevent blocking operations, consider logging failed calls. Ensure that the return value of a low-level call is checked or logged.",
+              "tool": "aderyn"
+            },
+            {
+              "swc_id": "SWC-104",
+              "name": "Unchecked Call Return Value",
+              "severity": "Medium",
+              "detector_id": "unsafe-erc20-operation",
+              "location": "unsafe-erc20-operation",
+              "line": 30,
+              "confidence": "medium",
+              "explanation": "ERC20 functions may not behave as expected. For example: return values are not always meaningful. It is recommended to use OpenZeppelin's SafeERC20 library.",
+              "tool": "aderyn"
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_012",
+          "ground_truth": {
+            "swc_id": "SWC-105",
+            "name": "Unprotected Ether Withdrawal",
+            "severity": "Critical"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-105",
+              "name": "Unprotected Ether Withdrawal",
+              "severity": "Medium",
+              "detector_id": "eth-send-unchecked-address",
+              "location": "eth-send-unchecked-address",
+              "line": 16,
+              "confidence": "medium",
+              "explanation": "Consider introducing checks for `msg.sender` to ensure the recipient of the money is as intended.",
+              "tool": "aderyn"
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_013",
+          "ground_truth": {
+            "swc_id": "SWC-106",
+            "name": "Unprotected SELFDESTRUCT",
+            "severity": "Critical"
+          },
+          "findings": []
+        },
+        {
+          "contract_id": "contract_014",
+          "ground_truth": {
+            "swc_id": "SWC-112",
+            "name": "Delegatecall to Untrusted Callee",
+            "severity": "Critical"
+          },
+          "findings": [
+            {
+              "swc_id": "SWC-105",
+              "name": "Unprotected Ether Withdrawal",
+              "severity": "Medium",
+              "detector_id": "eth-send-unchecked-address",
+              "location": "eth-send-unchecked-address",
+              "line": 28,
+              "confidence": "medium",
+              "explanation": "Consider introducing checks for `msg.sender` to ensure the recipient of the money is as intended.",
+              "tool": "aderyn"
+            },
+            {
+              "swc_id": "SWC-104",
+              "name": "Unchecked Call Return Value",
+              "severity": "Medium",
+              "detector_id": "unsafe-erc20-operation",
+              "location": "unsafe-erc20-operation",
+              "line": 31,
+              "confidence": "medium",
+              "explanation": "ERC20 functions may not behave as expected. For example: return values are not always meaningful. It is recommended to use OpenZeppelin's SafeERC20 library.",
+              "tool": "aderyn"
+            }
+          ]
+        },
+        {
+          "contract_id": "contract_015",
+          "ground_truth": {
+            "swc_id": "SWC-114",
+            "name": "Transaction Order Dependence",
+            "severity": "Medium"
+          },
+          "findings": []
+        }
+      ],
+      "errors": [
+        {
+          "contract_id": "contract_003",
+          "error": "Compilation Error: \u001b[1;31mError (7576)\u001b[0m\u001b[1;37m: Undeclared identifier. Did you mean \"keccak256\"?\u001b[0m\n  \u001b[34m-->\u001b[0m data/generated_contracts/contract_003.sol:25:26:\n\u001b[34m   |\u001b[0m\n\u001b[34m25 |\u001b[0m         bytes32 txHash = \u001b[33mkeccak250\u001b[0m(abi.encode(target, value, data));\n\u001b[34m   |\u001b[0m                          \u001b[1;33m^^^^^^^^^\u001b[0m"
+        },
+        {
+          "contract_id": "contract_008",
+          "error": "thread '<unknown>' (395) has overflowed its stack\nfatal runtime error: stack overflow, aborting"
+        },
+        {
+          "contract_id": "contract_013",
+          "error": "thread '<unknown>' (515) has overflowed its stack\nfatal runtime error: stack overflow, aborting"
+        }
+      ]
+    }
+  ],
+  "scans": [
+    {
+      "contract_id": "contract_001",
+      "ground_truth": {
+        "swc_id": "SWC-107",
+        "name": "Reentrancy",
+        "severity": "High"
+      },
+      "findings": [
+        {
+          "swc_id": "SWC-107",
+          "name": "Reentrancy",
+          "severity": "High",
+          "detector_id": "external-call-before-state-update",
+          "location": "function added",
+          "line": 28,
+          "confidence": "high",
+          "explanation": "External call appears before a later state write in the same function."
+        },
+        {
+          "swc_id": "SWC-105",
+          "name": "Unprotected Ether Withdrawal",
+          "severity": "High",
+          "detector_id": "value-transfer-without-access-control",
+          "location": "function added",
+          "line": 28,
+          "confidence": "medium",
+          "explanation": "Function transfers value or destroys funds without obvious owner/admin gating."
+        },
+        {
+          "swc_id": "SWC-114",
+          "name": "Transaction Order Dependence",
+          "severity": "Medium",
+          "detector_id": "allowance-approval-race",
+          "location": "function approve",
+          "line": 35,
+          "confidence": "medium",
+          "explanation": "Allowance is overwritten directly, which can expose approve race/front-running behavior."
+        }
+      ]
+    },
+    {
+      "contract_id": "contract_002",
+      "ground_truth": {
+        "swc_id": "SWC-101",
+        "name": "Integer Overflow/Underflow",
+        "severity": "High"
+      },
+      "findings": [
+        {
+          "swc_id": "SWC-105",
+          "name": "Unprotected Ether Withdrawal",
+          "severity": "High",
+          "detector_id": "value-transfer-without-access-control",
+          "location": "function withdraw",
+          "line": 21,
+          "confidence": "medium",
+          "explanation": "Function transfers value or destroys funds without obvious owner/admin gating."
+        }
+      ]
+    },
+    {
+      "contract_id": "contract_003",
+      "ground_truth": {
+        "swc_id": "SWC-104",
+        "name": "Unchecked Call Return Value",
+        "severity": "Medium"
+      },
+      "findings": [
+        {
+          "swc_id": "SWC-104",
+          "name": "Unchecked Call Return Value",
+          "severity": "Medium",
+          "detector_id": "unchecked-low-level-call",
+          "location": "function execute",
+          "line": 32,
+          "confidence": "medium",
+          "explanation": "Low-level call result is not clearly checked with require()."
+        }
+      ]
+    },
+    {
+      "contract_id": "contract_004",
+      "ground_truth": {
+        "swc_id": "SWC-105",
+        "name": "Unprotected Ether Withdrawal",
+        "severity": "Critical"
+      },
+      "findings": [
+        {
+          "swc_id": "SWC-105",
+          "name": "Unprotected Ether Withdrawal",
+          "severity": "High",
+          "detector_id": "value-transfer-without-access-control",
+          "location": "function withdrawRefund",
+          "line": 33,
+          "confidence": "medium",
+          "explanation": "Function transfers value or destroys funds without obvious owner/admin gating."
+        },
+        {
+          "swc_id": "SWC-105",
+          "name": "Unprotected Ether Withdrawal",
+          "severity": "High",
+          "detector_id": "value-transfer-without-access-control",
+          "location": "function withdrawFunds",
+          "line": 39,
+          "confidence": "medium",
+          "explanation": "Function transfers value or destroys funds without obvious owner/admin gating."
+        },
+        {
+          "swc_id": "SWC-105",
+          "name": "Unprotected Ether Withdrawal",
+          "severity": "High",
+          "detector_id": "value-transfer-without-access-control",
+          "location": "function withdraw",
+          "line": 53,
+          "confidence": "medium",
+          "explanation": "Function transfers value or destroys funds without obvious owner/admin gating."
+        },
+        {
+          "swc_id": "SWC-105",
+          "name": "Unprotected Ether Withdrawal",
+          "severity": "High",
+          "detector_id": "value-transfer-without-access-control",
+          "location": "function emergencyWithdraw",
+          "line": 62,
+          "confidence": "medium",
+          "explanation": "Function transfers value or destroys funds without obvious owner/admin gating."
+        }
+      ]
+    },
+    {
+      "contract_id": "contract_005",
+      "ground_truth": {
+        "swc_id": "SWC-106",
+        "name": "Unprotected SELFDESTRUCT",
+        "severity": "Critical"
+      },
+      "findings": [
+        {
+          "swc_id": "SWC-105",
+          "name": "Unprotected Ether Withdrawal",
+          "severity": "High",
+          "detector_id": "value-transfer-without-access-control",
+          "location": "function emergencyWithdraw",
+          "line": 29,
+          "confidence": "medium",
+          "explanation": "Function transfers value or destroys funds without obvious owner/admin gating."
+        },
+        {
+          "swc_id": "SWC-106",
+          "name": "Unprotected SELFDESTRUCT",
+          "severity": "High",
+          "detector_id": "unprotected-selfdestruct",
+          "location": "function emergencyWithdraw",
+          "line": 29,
+          "confidence": "high",
+          "explanation": "selfdestruct is reachable without obvious owner/admin gating."
+        }
+      ]
+    },
+    {
+      "contract_id": "contract_006",
+      "ground_truth": {
+        "swc_id": "SWC-112",
+        "name": "Delegatecall to Untrusted Callee",
+        "severity": "Critical"
+      },
+      "findings": [
+        {
+          "swc_id": "SWC-112",
+          "name": "Delegatecall to Untrusted Callee",
+          "severity": "High",
+          "detector_id": "delegatecall-target-review",
+          "location": "function upgrade",
+          "line": 26,
+          "confidence": "medium",
+          "explanation": "delegatecall is present; target trust boundary requires review."
+        },
+        {
+          "swc_id": "SWC-114",
+          "name": "Transaction Order Dependence",
+          "severity": "Medium",
+          "detector_id": "allowance-approval-race",
+          "location": "function approve",
+          "line": 31,
+          "confidence": "medium",
+          "explanation": "Allowance is overwritten directly, which can expose approve race/front-running behavior."
+        }
+      ]
+    },
+    {
+      "contract_id": "contract_007",
+      "ground_truth": {
+        "swc_id": "SWC-114",
+        "name": "Transaction Order Dependence",
+        "severity": "Medium"
+      },
+      "findings": [
+        {
+          "swc_id": "SWC-105",
+          "name": "Unprotected Ether Withdrawal",
+          "severity": "High",
+          "detector_id": "value-transfer-without-access-control",
+          "location": "function withdraw",
+          "line": 20,
+          "confidence": "medium",
+          "explanation": "Function transfers value or destroys funds without obvious owner/admin gating."
+        }
+      ]
+    },
+    {
+      "contract_id": "contract_008",
+      "ground_truth": {
+        "swc_id": "SWC-128",
+        "name": "DoS with Block Gas Limit",
+        "severity": "Medium"
+      },
+      "findings": [
+        {
+          "swc_id": "SWC-128",
+          "name": "DoS with Block Gas Limit",
+          "severity": "Medium",
+          "detector_id": "unbounded-loop-over-dynamic-data",
+          "location": "function processPendingTransactions",
+          "line": 41,
+          "confidence": "medium",
+          "explanation": "Loop appears bounded by dynamic collection length and may become too expensive."
+        }
+      ]
+    },
+    {
+      "contract_id": "contract_009",
+      "ground_truth": {
+        "swc_id": "SWC-107",
+        "name": "Reentrancy",
+        "severity": "High"
+      },
+      "findings": [
+        {
+          "swc_id": "SWC-105",
+          "name": "Unprotected Ether Withdrawal",
+          "severity": "High",
+          "detector_id": "value-transfer-without-access-control",
+          "location": "function withdrawRefund",
+          "line": 33,
+          "confidence": "medium",
+          "explanation": "Function transfers value or destroys funds without obvious owner/admin gating."
+        }
+      ]
+    },
+    {
+      "contract_id": "contract_010",
+      "ground_truth": {
+        "swc_id": "SWC-101",
+        "name": "Integer Overflow/Underflow",
+        "severity": "High"
+      },
+      "findings": []
+    },
+    {
+      "contract_id": "contract_011",
+      "ground_truth": {
+        "swc_id": "SWC-104",
+        "name": "Unchecked Call Return Value",
+        "severity": "Medium"
+      },
+      "findings": [
+        {
+          "swc_id": "SWC-107",
+          "name": "Reentrancy",
+          "severity": "High",
+          "detector_id": "external-call-before-state-update",
+          "location": "function emergencyWithdraw",
+          "line": 40,
+          "confidence": "high",
+          "explanation": "External call appears before a later state write in the same function."
+        },
+        {
+          "swc_id": "SWC-104",
+          "name": "Unchecked Call Return Value",
+          "severity": "Medium",
+          "detector_id": "unchecked-low-level-call",
+          "location": "function emergencyWithdraw",
+          "line": 40,
+          "confidence": "medium",
+          "explanation": "Low-level call result is not clearly checked with require()."
+        },
+        {
+          "swc_id": "SWC-105",
+          "name": "Unprotected Ether Withdrawal",
+          "severity": "High",
+          "detector_id": "value-transfer-without-access-control",
+          "location": "function withdrawToEthAddress",
+          "line": 30,
+          "confidence": "medium",
+          "explanation": "Function transfers value or destroys funds without obvious owner/admin gating."
+        },
+        {
+          "swc_id": "SWC-105",
+          "name": "Unprotected Ether Withdrawal",
+          "severity": "High",
+          "detector_id": "value-transfer-without-access-control",
+          "location": "function emergencyWithdraw",
+          "line": 40,
+          "confidence": "medium",
+          "explanation": "Function transfers value or destroys funds without obvious owner/admin gating."
+        },
+        {
+          "swc_id": "SWC-114",
+          "name": "Transaction Order Dependence",
+          "severity": "Medium",
+          "detector_id": "allowance-approval-race",
+          "location": "function approve",
+          "line": 24,
+          "confidence": "medium",
+          "explanation": "Allowance is overwritten directly, which can expose approve race/front-running behavior."
+        }
+      ]
+    },
+    {
+      "contract_id": "contract_012",
+      "ground_truth": {
+        "swc_id": "SWC-105",
+        "name": "Unprotected Ether Withdrawal",
+        "severity": "Critical"
+      },
+      "findings": [
+        {
+          "swc_id": "SWC-105",
+          "name": "Unprotected Ether Withdrawal",
+          "severity": "High",
+          "detector_id": "value-transfer-without-access-control",
+          "location": "function withdraw",
+          "line": 20,
+          "confidence": "medium",
+          "explanation": "Function transfers value or destroys funds without obvious owner/admin gating."
+        },
+        {
+          "swc_id": "SWC-105",
+          "name": "Unprotected Ether Withdrawal",
+          "severity": "High",
+          "detector_id": "value-transfer-without-access-control",
+          "location": "function withdrawAll",
+          "line": 31,
+          "confidence": "medium",
+          "explanation": "Function transfers value or destroys funds without obvious owner/admin gating."
+        }
+      ]
+    },
+    {
+      "contract_id": "contract_013",
+      "ground_truth": {
+        "swc_id": "SWC-106",
+        "name": "Unprotected SELFDESTRUCT",
+        "severity": "Critical"
+      },
+      "findings": [
+        {
+          "swc_id": "SWC-105",
+          "name": "Unprotected Ether Withdrawal",
+          "severity": "High",
+          "detector_id": "value-transfer-without-access-control",
+          "location": "function kill",
+          "line": 37,
+          "confidence": "medium",
+          "explanation": "Function transfers value or destroys funds without obvious owner/admin gating."
+        },
+        {
+          "swc_id": "SWC-106",
+          "name": "Unprotected SELFDESTRUCT",
+          "severity": "High",
+          "detector_id": "unprotected-selfdestruct",
+          "location": "function kill",
+          "line": 37,
+          "confidence": "high",
+          "explanation": "selfdestruct is reachable without obvious owner/admin gating."
+        }
+      ]
+    },
+    {
+      "contract_id": "contract_014",
+      "ground_truth": {
+        "swc_id": "SWC-112",
+        "name": "Delegatecall to Untrusted Callee",
+        "severity": "Critical"
+      },
+      "findings": [
+        {
+          "swc_id": "SWC-105",
+          "name": "Unprotected Ether Withdrawal",
+          "severity": "High",
+          "detector_id": "value-transfer-without-access-control",
+          "location": "function withdrawRefund",
+          "line": 31,
+          "confidence": "medium",
+          "explanation": "Function transfers value or destroys funds without obvious owner/admin gating."
+        },
+        {
+          "swc_id": "SWC-112",
+          "name": "Delegatecall to Untrusted Callee",
+          "severity": "High",
+          "detector_id": "delegatecall-target-review",
+          "location": "function executeUpgrade",
+          "line": 36,
+          "confidence": "medium",
+          "explanation": "delegatecall is present; target trust boundary requires review."
+        }
+      ]
+    },
+    {
+      "contract_id": "contract_015",
+      "ground_truth": {
+        "swc_id": "SWC-114",
+        "name": "Transaction Order Dependence",
+        "severity": "Medium"
+      },
+      "findings": []
+    }
+  ],
+  "notes": [
+    "The built-in heuristic comparator is deterministic and runs everywhere.",
+    "Slither and Aderyn adapters run real analyzer JSON output when their binaries are available on PATH.",
+    "Mythril remains listed as a planned symbolic-analysis comparator."
+  ]
+}
