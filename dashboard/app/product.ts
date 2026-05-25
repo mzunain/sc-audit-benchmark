@@ -56,6 +56,40 @@ export interface StaticComparator {
   errors?: unknown[];
 }
 
+export type ProofStatus = "reproduced" | "likely" | "template" | "blocked";
+export type ProofGateState = "passed" | "ready" | "blocked";
+
+export interface ProofTemplate {
+  severity: "Critical" | "High" | "Medium";
+  exploitGoal: string;
+  hypothesis: string;
+  foundryTest: string;
+  patchAssertion: string;
+  reviewerNote: string;
+}
+
+export interface ProofGate {
+  label: string;
+  state: ProofGateState;
+  detail: string;
+}
+
+export interface ProofCase {
+  swc: string;
+  name: string;
+  status: ProofStatus;
+  statusLabel: string;
+  proofScore: number;
+  llmAverageRate: number;
+  bestModel: string;
+  bestModelRate: number;
+  staticRate: number;
+  staticFound: number;
+  staticTotal: number;
+  template: ProofTemplate;
+  gates: ProofGate[];
+}
+
 export const MODEL_META: Record<string, ModelMeta> = {
   "nim:qwen/qwen3-coder-480b-a35b-instruct": {
     short: "Qwen3-Coder 480B",
@@ -211,6 +245,125 @@ export const SWC_ACTIONS: Record<string, string> = {
   "SWC-128": "Check loops, bounded iteration, and gas-amplification paths with large-state scenarios.",
 };
 
+export const PROOF_TEMPLATES: Record<string, ProofTemplate> = {
+  "SWC-101": {
+    severity: "High",
+    exploitGoal: "Force an arithmetic edge case and prove the patched code reverts or preserves accounting.",
+    hypothesis: "A boundary value can change balances or supply if arithmetic assumptions are wrong.",
+    foundryTest: `function test_IntegerBoundaryRegression() public {
+    vm.expectRevert();
+    target.applyDelta(type(uint256).max);
+
+    assertEq(target.totalSupply(), expectedSupply);
+}`,
+    patchAssertion: "Use Solidity 0.8 checked arithmetic or scoped unchecked blocks with explicit bounds.",
+    reviewerNote: "Boundary arithmetic is weak across both LLMs and static tools in this run; require manual review.",
+  },
+  "SWC-104": {
+    severity: "High",
+    exploitGoal: "Make the low-level call fail and prove the contract cannot continue as if funds moved.",
+    hypothesis: "A failed external call is ignored, leaving accounting or payout state inconsistent.",
+    foundryTest: `function test_UncheckedCallMustRevert() public {
+    receiver.setRejectTransfers(true);
+
+    vm.expectRevert();
+    vault.distribute(address(receiver), 1 ether);
+}`,
+    patchAssertion: "Check the returned success flag and revert or record a recoverable failed-payment state.",
+    reviewerNote: "Static analyzers usually help here; LLM output should still explain business impact.",
+  },
+  "SWC-105": {
+    severity: "Critical",
+    exploitGoal: "Call the withdrawal path as an unprivileged actor and prove access control blocks it.",
+    hypothesis: "A public withdrawal path can move contract funds without owner, role, or balance authority.",
+    foundryTest: `function test_OnlyAuthorizedCanWithdraw() public {
+    vm.prank(attacker);
+    vm.expectRevert();
+    treasury.withdraw(attacker, 1 ether);
+}`,
+    patchAssertion: "Apply owner, role, or capability checks before every fund-moving operation.",
+    reviewerNote: "Treat every positive signal as release-blocking until privilege boundaries are explicit.",
+  },
+  "SWC-106": {
+    severity: "Critical",
+    exploitGoal: "Reach the selfdestruct path as an attacker and prove only authorized shutdown can execute.",
+    hypothesis: "A public or weakly gated destroy function can permanently remove contract code and funds.",
+    foundryTest: `function test_SelfdestructRequiresOwner() public {
+    vm.prank(attacker);
+    vm.expectRevert();
+    target.emergencyDestroy(payable(attacker));
+}`,
+    patchAssertion: "Remove selfdestruct where possible; otherwise gate it behind owner, timelock, and migration policy.",
+    reviewerNote: "Require a human signoff because the mitigation is often architectural, not only syntactic.",
+  },
+  "SWC-107": {
+    severity: "Critical",
+    exploitGoal: "Re-enter before state is updated and prove the patched version blocks the second withdrawal.",
+    hypothesis: "External control returns to the attacker before balances are reduced.",
+    foundryTest: `function test_ReentrancyExploitDrainsVulnerableVault() public {
+    vault.deposit{value: 3 ether}();
+    attacker.attack{value: 1 ether}();
+
+    require(address(vault).balance == 0, "vault should be drained");
+    require(address(attacker).balance == 4 ether, "attacker extracts all funds");
+}
+
+function test_ReentrancyPatchKeepsVictimFunds() public {
+    fixedVault.deposit{value: 3 ether}();
+    fixedAttacker.attack{value: 1 ether}();
+
+    require(address(fixedVault).balance == 3 ether, "victim funds remain");
+    require(fixedAttacker.reentryBlocked(), "patch blocks re-entry");
+}`,
+    patchAssertion: "Move state updates before external calls and add a reentrancy guard on fund-moving methods.",
+    reviewerNote: "Use this as the default demo proof because it is easy to explain and visually convincing.",
+  },
+  "SWC-112": {
+    severity: "Critical",
+    exploitGoal: "Point delegatecall at attacker code and prove storage ownership cannot be overwritten.",
+    hypothesis: "Delegatecall executes untrusted code in the caller storage context.",
+    foundryTest: `function test_DelegatecallTargetIsAllowlisted() public {
+    vm.prank(attacker);
+    vm.expectRevert();
+    proxy.execute(address(maliciousModule), payload);
+}`,
+    patchAssertion: "Allowlist delegatecall targets and freeze upgrade authority behind audited governance.",
+    reviewerNote: "Pair the PoC with a storage-diff assertion so auditors can see the concrete takeover path.",
+  },
+  "SWC-114": {
+    severity: "Medium",
+    exploitGoal: "Simulate attacker ordering before the victim transaction and prove the patch removes profit.",
+    hypothesis: "Transaction order changes the economic outcome for an attacker.",
+    foundryTest: `function test_OrderingAttackNoLongerProfits() public {
+    vm.prank(attacker);
+    market.trade(attackerOrder);
+
+    vm.prank(victim);
+    market.trade(victimOrder);
+
+    assertLe(token.balanceOf(attacker), attackerStart);
+}`,
+    patchAssertion: "Use commit-reveal, slippage bounds, deadlines, or batch settlement for order-sensitive flows.",
+    reviewerNote: "The benchmark exposes this as a blind spot; require human MEV and protocol-design review.",
+  },
+  "SWC-128": {
+    severity: "High",
+    exploitGoal: "Grow state until the operation approaches the gas limit and prove the patched path stays bounded.",
+    hypothesis: "An unbounded loop can make key operations impossible as state grows.",
+    foundryTest: `function test_GasBoundedAfterLargeStateGrowth() public {
+    seedUsers(500);
+
+    uint256 gasBefore = gasleft();
+    target.processBatch(0, 50);
+    uint256 gasUsed = gasBefore - gasleft();
+
+    assertLt(gasUsed, 2_500_000);
+}`,
+    patchAssertion: "Paginate loops, cap array growth, or move expensive work to bounded pull-based operations.",
+    reviewerNote: "Make gas evidence concrete; a chart is weaker than a failing gas-budget test.",
+  },
+};
+
 export function formatPct(value: number, digits = 1) {
   return `${value.toFixed(digits)}%`;
 }
@@ -276,4 +429,130 @@ export function staticComparatorRows(data: StaticBaselineData) {
     falsePositivesPerContract: item.summary?.false_positives_per_contract ?? 0,
     contractsScanned: item.summary?.contracts_scanned ?? 0,
   }));
+}
+
+function proofStatus(bestModelRate: number, staticRate: number): ProofStatus {
+  if (bestModelRate >= 0.5 && staticRate >= 0.5) return "reproduced";
+  if (bestModelRate >= 0.5 || staticRate >= 0.5) return "likely";
+  if (bestModelRate > 0 || staticRate > 0) return "template";
+  return "blocked";
+}
+
+function proofStatusLabel(status: ProofStatus) {
+  switch (status) {
+    case "reproduced":
+      return "Cross-tool reproduced";
+    case "likely":
+      return "Likely, needs PoC";
+    case "template":
+      return "Template ready";
+    case "blocked":
+      return "Human escalation";
+  }
+}
+
+export function proofStatusTone(status: ProofStatus) {
+  switch (status) {
+    case "reproduced":
+      return "bg-emerald-100 text-emerald-900 ring-1 ring-emerald-200";
+    case "likely":
+      return "bg-cyan-100 text-cyan-900 ring-1 ring-cyan-200";
+    case "template":
+      return "bg-amber-100 text-amber-900 ring-1 ring-amber-200";
+    case "blocked":
+      return "bg-rose-100 text-rose-900 ring-1 ring-rose-200";
+  }
+}
+
+export function proofGateTone(state: ProofGateState) {
+  switch (state) {
+    case "passed":
+      return "bg-emerald-500 text-white";
+    case "ready":
+      return "bg-cyan-500 text-white";
+    case "blocked":
+      return "bg-stone-300 text-stone-700";
+  }
+}
+
+export function buildProofCases(data: BreakdownData, staticBaseline: StaticBaselineData | null): ProofCase[] {
+  return data.swc_ids
+    .map((swc) => {
+      const modelRates = data.models.map((model) => {
+        const cell = data.breakdown[model]?.[swc];
+        return {
+          model,
+          rate: cell && cell.total > 0 ? cell.found / cell.total : 0,
+        };
+      });
+      const best = modelRates.sort((a, b) => b.rate - a.rate)[0] ?? { model: data.models[0] ?? "", rate: 0 };
+      const staticCell = staticBaseline?.summary.swc_coverage[swc] ?? { found: 0, total: 0 };
+      const staticRate = staticCell.total > 0 ? staticCell.found / staticCell.total : 0;
+      const llmAverageRate = swcAverageRate(data, swc);
+      const status = proofStatus(best.rate, staticRate);
+      const anySignal = best.rate > 0 || staticRate > 0;
+      const proofScore = Math.round(best.rate * 50 + staticRate * 35 + llmAverageRate * 15);
+      const template =
+        PROOF_TEMPLATES[swc] ?? {
+          severity: "Medium",
+          exploitGoal: "Convert the finding into a minimal failing test.",
+          hypothesis: "The finding is not proven until a reviewer can reproduce the path.",
+          foundryTest: `function test_${swc.replace("-", "_")}_ProofTemplate() public {
+    // Arrange vulnerable state.
+    // Act as attacker.
+    // Assert patched behavior.
+}`,
+          patchAssertion: "Add the smallest patch that makes the exploit test fail and the regression test pass.",
+          reviewerNote: "No specialized template is configured for this SWC yet.",
+        };
+      const gates: ProofGate[] = [
+        {
+          label: "LLM finding",
+          state: best.rate > 0 ? "passed" : "blocked",
+          detail: best.rate > 0 ? `${modelMeta(best.model).short} found ${formatPct(best.rate * 100, 0)}` : "No model signal",
+        },
+        {
+          label: "Static agreement",
+          state: staticRate > 0 ? "passed" : staticBaseline ? "blocked" : "ready",
+          detail: staticBaseline
+            ? `${staticCell.found}/${staticCell.total || 0} static samples`
+            : "Static baseline pending",
+        },
+        {
+          label: "Exploit hypothesis",
+          state: anySignal ? "ready" : "blocked",
+          detail: anySignal ? template.hypothesis : "Needs human hypothesis",
+        },
+        {
+          label: "Foundry PoC",
+          state: anySignal ? "ready" : "blocked",
+          detail: anySignal ? "Template generated, execution not run" : "Blocked until a path is identified",
+        },
+        {
+          label: "Patch regression",
+          state: status === "reproduced" || status === "likely" ? "ready" : "blocked",
+          detail:
+            status === "reproduced" || status === "likely"
+              ? template.patchAssertion
+              : "Wait for a confirmed proof path",
+        },
+      ];
+
+      return {
+        swc,
+        name: data.swc_names[swc] ?? swc,
+        status,
+        statusLabel: proofStatusLabel(status),
+        proofScore,
+        llmAverageRate,
+        bestModel: best.model,
+        bestModelRate: best.rate,
+        staticRate,
+        staticFound: staticCell.found,
+        staticTotal: staticCell.total,
+        template,
+        gates,
+      };
+    })
+    .sort((a, b) => b.proofScore - a.proofScore || a.swc.localeCompare(b.swc));
 }
