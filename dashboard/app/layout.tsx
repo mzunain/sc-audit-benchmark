@@ -5,8 +5,9 @@ import { Nav } from "./nav";
 const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-inter" });
 
 export const metadata = {
-  title: "Solidity Vulnerability Benchmark",
-  description: "Three open-weight model philosophies tested on LLM-generated vulnerable Solidity contracts.",
+  title: "SC Audit Benchmark",
+  description:
+    "Evidence-first model selection for Solidity vulnerability scanning, cost-adjusted audit workflows, and LLM benchmark analysis.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
