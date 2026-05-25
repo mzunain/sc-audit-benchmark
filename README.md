@@ -11,7 +11,7 @@ contract vulnerabilities. Built for SC Audit Studio at That Crypto Hackathon
 - [Per-vuln breakdown](https://sc-audit-benchmark.vercel.app/breakdown) — heatmap of detection rate by model × SWC class
 - [Playground](https://sc-audit-benchmark.vercel.app/playground) — paste a Solidity contract, pick a model, get a structured scan report
 
-The playground hits the same free NIM / OpenRouter tiers the benchmark itself uses. No rate-limiting yet, so be gentle if you're sharing the link widely.
+The playground hits the same free NIM / OpenRouter tiers the benchmark itself uses. The hosted route now has a model allowlist, payload cap, provider timeout, and rate-limit headers, with optional Upstash Redis backing for durable public demos.
 
 ## Results
 
@@ -69,56 +69,112 @@ $0.30/M tokens vs Sonnet at $3/M, here's the quality-per-dollar frontier."*
 
 ## Quick Start
 
-```bash
-# 1. Install
-pip install -r requirements.txt
-cp .env.example .env
-# Edit .env and add at least one of:
-#   OPENROUTER_API_KEY=sk-or-v1-...    (from https://openrouter.ai/keys)
-#   NVIDIA_API_KEY=nvapi-...           (from https://build.nvidia.com)
-# Defaults use NIM for the headliner model, so NVIDIA_API_KEY is recommended.
+For a beginner-friendly local setup, use the root runner:
 
-# 2. Smoke test (~$0, ~2 minutes)
+```bash
+./run.sh
+```
+
+That single command:
+
+- creates `.env` from `.env.example` when missing
+- creates/uses `.venv` and installs Python requirements
+- installs dashboard npm dependencies
+- validates or prepares static analyzer data
+- bundles dashboard JSON files
+- starts the dashboard on the first free local port, usually `http://127.0.0.1:3000`
+
+No API key is required to view the benchmark dashboard. Add one or both keys to
+`.env` when you want live playground scans:
+
+```bash
+OPENROUTER_API_KEY=sk-or-v1-...    # https://openrouter.ai/keys
+NVIDIA_API_KEY=nvapi-...           # https://build.nvidia.com
+```
+
+Useful runner options:
+
+```bash
+./run.sh --prepare-only       # install/check deps and bundle data, then stop
+./run.sh --refresh-static     # rebuild static analyzer data from local tools
+./run.sh --docker-analyzers   # rebuild static analyzer data in Docker
+PORT=3005 ./run.sh            # choose a preferred starting port
+```
+
+### Full Benchmark Pipeline
+
+The one-command runner starts the dashboard from existing benchmark output. To
+generate a fresh benchmark run, add API keys to `.env`, then run:
+
+```bash
+./run.sh --prepare-only
+source .venv/bin/activate
+
+# Smoke test (~$0, ~2 minutes)
 python src/main.py --contracts-count 2
 
-# 3. Full pipeline (15 contracts, 3 scanners, judged, ~$0 with default lineup)
+# Full pipeline (15 contracts, 3 scanners, judged, ~$0 with default lineup)
 python src/main.py
 
-# 4. Re-run without regenerating contracts
+# Re-run without regenerating contracts
 python src/main.py --skip-generation
-
-# 5. Start dashboard
-cd dashboard
-npm install
-# Forward your keys to the Next.js process so /api/playground works:
-export OPENROUTER_API_KEY=...
-export NVIDIA_API_KEY=...
-npm run dev
-# Open http://localhost:3000
 ```
 
 ## Dashboard
 
-Three pages:
-- `/` — leaderboard with cost-adjusted and pure-quality views, philosophy chips, winner callout
-- `/breakdown` — per-model per-SWC detection heatmap
-- `/playground` — paste a Solidity contract, pick a model, get a structured scan report
+Four Tailwind-polished pages with a shared responsive shell, sticky navigation, dark product headers, and shadcn/Radix controls where native menus would otherwise leak OS styling:
+- `/` — leaderboard, cost frontier, competitor matrix, production gates, and static analyzer comparators
+- `/analysis` — evidence handoff by model and SWC class
+- `/breakdown` — shadcn-filtered per-model per-SWC detection heatmap
+- `/playground` — command-center audit workbench with a styled model picker, strategy controls, scan report, exports, and history
 
 ### Run locally
 
 ```bash
-cd dashboard
-npm install
-npm run bundle-data           # copies fresh benchmark output into public/data
-set -a && source ../.env && set +a
-npm run dev
-# http://localhost:3000
+./run.sh
 ```
 
 The playground route reads `OPENROUTER_API_KEY` and `NVIDIA_API_KEY` from the
-process env (sourced from `../.env` as shown). Run `npm run bundle-data` again
-any time after re-running the Python pipeline so the dashboard picks up the new
-numbers.
+process env. `./run.sh` automatically sources `.env` before starting Next.js.
+Run `./run.sh --refresh-static` or `./run.sh --docker-analyzers` after re-running
+the Python pipeline so the dashboard picks up new model numbers and static
+analyzer comparators.
+
+`scripts/static_baseline.py` always runs the built-in heuristic comparator. It
+also detects `slither` and `aderyn` on `PATH`, runs their JSON reports when
+available, and normalizes findings back to the benchmark's SWC classes:
+
+```bash
+bash scripts/run_static_analyzers.sh --local
+bash scripts/run_static_analyzers.sh --docker          # reproducible Slither/Aderyn environment
+SC_AUDIT_ANALYZER_PLATFORM=linux/amd64 bash scripts/run_static_analyzers.sh --docker
+python scripts/static_baseline.py --tools heuristic    # deterministic fallback only
+```
+
+Slither and Aderyn are optional local binaries, not deployment dependencies.
+Install them from their upstream docs if you want real analyzer rows in
+`dashboard/public/data/static_baseline.json`. On Apple Silicon, the analyzer
+image stays native ARM but installs the AMD64 runtime libraries needed by
+`solc-select`'s Solidity compiler binary under Docker/Colima qemu emulation. If
+your Docker setup does not provide foreign-binary emulation, use a native
+Slither/solc install or opt into an AMD64 image with
+`SC_AUDIT_ANALYZER_PLATFORM=linux/amd64`.
+
+The repo also includes `.github/workflows/static-analyzers.yml`. It runs on
+manual dispatch, weekly schedule, and relevant PRs, installs Slither + Aderyn,
+builds `output/static_baseline.json`, bundles dashboard data, validates the
+schema, and uploads both JSON files as artifacts. It is read-only by design; it
+does not commit generated benchmark output back to the repository.
+
+Optional durable public-demo rate limiting:
+
+```bash
+UPSTASH_REDIS_REST_URL=...
+UPSTASH_REDIS_REST_TOKEN=...
+```
+
+Without those variables the route falls back to an in-memory limiter, which is
+fine for local demos and acceptable as a degraded fallback on serverless.
 
 ### Deploy to Vercel (free tier)
 
@@ -129,11 +185,10 @@ auto-detects this from the deploy link), and paste the two API keys when
 prompted. Build takes ~1 minute; the resulting URL is shareable and the playground
 works end-to-end against the same free NIM + OpenRouter tiers.
 
-**Heads-up:** the playground endpoint is unauthenticated by default — anyone
-visiting the URL can burn through your free NIM credits. For a hackathon demo
-that's fine (worst case it stops responding when free credits run out).
-For longer-lived deployments, slap a rate limit on `app/api/playground/route.ts`
-or front it with Cloudflare Turnstile.
+**Heads-up:** the playground endpoint is unauthenticated by default. The built-in
+rate limit protects casual public demos, but longer-lived deployments should add
+durable Redis env vars, authentication, or Cloudflare Turnstile before sharing
+widely.
 
 ## Default Lineup
 
@@ -198,13 +253,15 @@ Note: cost-adjusted uses *commercial list price*, not actual API spend. See
 
 ```
 sc-audit-benchmark/
+├── run.sh                         # One-command local setup + dashboard runner
 ├── data/                          # SWC categories, templates, generated contracts
+├── scripts/                       # Static analyzer, validation, and data helpers
 ├── src/
 │   ├── pipeline/                  # generator.py, scanner.py, judge.py, llm_client.py
 │   ├── scoring/                   # metrics.py
 │   └── main.py                    # Orchestrator
 ├── output/                        # Scanner reports, judge scores, leaderboard.json
-└── dashboard/                     # Next.js 14 + Tailwind UI
+└── dashboard/                     # Next.js 15 + Tailwind + shadcn/Radix UI
 ```
 
 ## Why This Matters
