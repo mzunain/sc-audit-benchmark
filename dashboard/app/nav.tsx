@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "navigation";
+import { usePathname } from "next/navigation";
 
 const LINKS = [
   { href: "/", label: "Leaderboard" },
