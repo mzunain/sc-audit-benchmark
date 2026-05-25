@@ -1,0 +1,69 @@
+name: Static Analyzer Baselines
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 4 * * 1"
+  pull_request:
+    paths:
+      - "data/generated_contracts/**"
+      - "scripts/static_baseline.py"
+      - "scripts/validate_static_baseline.py"
+      - "scripts/run_static_analyzers.sh"
+      - "dashboard/scripts/bundle-data.js"
+      - "Dockerfile.analyzers"
+      - ".github/workflows/static-analyzers.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  analyzer-baseline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: dashboard/package-lock.json
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dashboard dependencies
+        run: npm ci --prefix dashboard
+
+      - name: Install Slither
+        run: |
+          python -m venv .venv-slither
+          .venv-slither/bin/pip install --upgrade pip
+          .venv-slither/bin/pip install slither-analyzer
+          echo "$PWD/.venv-slither/bin" >> "$GITHUB_PATH"
+
+      - name: Install Solidity compiler
+        run: |
+          solc-select install 0.8.24
+          solc-select use 0.8.24
+          solc --version
+
+      - name: Install Aderyn
+        run: npm install -g @cyfrin/aderyn
+
+      - name: Build analyzer baseline
+        run: bash scripts/run_static_analyzers.sh --local
+
+      - name: Upload analyzer artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: static-analyzer-baselines
+          path: |
+            output/static_baseline.json
+            dashboard/public/data/static_baseline.json
