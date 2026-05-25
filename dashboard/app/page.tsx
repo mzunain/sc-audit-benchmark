@@ -261,7 +261,16 @@ export default function Leaderboard() {
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[760px]">
+              <table className="w-full min-w-[1080px] table-fixed">
+                <colgroup>
+                  <col className="w-[74px]" />
+                  <col className="w-[320px]" />
+                  <col className="w-[340px]" />
+                  <col className="w-[110px]" />
+                  <col className="w-[92px]" />
+                  <col className="w-[72px]" />
+                  <col className="w-[92px]" />
+                </colgroup>
                 <thead className="border-b border-stone-200 bg-stone-50">
                   <tr className="text-xs uppercase tracking-wider text-stone-500">
                     <th className="px-5 py-3 text-left font-semibold">Rank</th>
@@ -279,15 +288,15 @@ export default function Leaderboard() {
                     return (
                       <tr key={row.model} className="border-b border-stone-100 last:border-0 hover:bg-stone-50/70">
                         <td className="px-5 py-4 text-sm font-semibold text-stone-500">#{index + 1}</td>
-                        <td className="px-5 py-4">
+                        <td className="px-5 py-4 align-middle">
                           <div className="font-semibold text-stone-950">{meta.short}</div>
-                          <div className="mt-1 font-mono text-xs text-stone-400">{row.model}</div>
+                          <div className="mt-1 break-all font-mono text-xs leading-5 text-stone-400">{row.model}</div>
                         </td>
-                        <td className="px-5 py-4">
-                          <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${meta.tone}`}>
+                        <td className="px-5 py-4 align-middle">
+                          <span className={`inline-flex whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-semibold ${meta.tone}`}>
                             {meta.philosophy}
                           </span>
-                          <div className="mt-2 max-w-xs text-xs leading-relaxed text-stone-500">{meta.bestFor}</div>
+                          <div className="mt-2 max-w-[280px] text-xs leading-5 text-stone-600">{meta.bestFor}</div>
                         </td>
                         <td className="px-5 py-4 text-right text-sm tabular-nums text-stone-700">
                           {formatPct(row.detection)}
@@ -617,17 +626,14 @@ export default function Leaderboard() {
             </h2>
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
               {MODEL_EXPANSION_ROADMAP.map((item) => (
-                <div key={item.lane} className="rounded-md border border-stone-200 bg-stone-50/70 p-4">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <div className="text-sm font-semibold text-stone-950">{item.lane}</div>
-                      <p className="mt-1 text-xs font-medium text-emerald-700">{item.models}</p>
-                    </div>
-                    <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold text-stone-600 ring-1 ring-stone-200">
-                      {item.status}
-                    </span>
+                <div key={item.lane} className="flex min-h-[188px] flex-col rounded-lg border border-stone-200 bg-stone-50/70 p-4">
+                  <div className="text-sm font-semibold text-stone-950">{item.lane}</div>
+                  <p className="mt-2 text-sm font-medium leading-5 text-emerald-700">{item.models}</p>
+                  <p className="mt-4 flex-1 text-sm leading-6 text-stone-600">{item.why}</p>
+                  <div className="mt-4 border-t border-stone-200 pt-3">
+                    <div className="metric-label">Status</div>
+                    <div className="mt-1 text-xs font-semibold leading-5 text-stone-700">{item.status}</div>
                   </div>
-                  <p className="mt-3 text-xs leading-relaxed text-stone-600">{item.why}</p>
                 </div>
               ))}
             </div>

@@ -1,12 +1,13 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname } from "navigation";
 
 const LINKS = [
   { href: "/", label: "Leaderboard" },
   { href: "/analysis", label: "Evidence" },
   { href: "/breakdown", label: "Coverage" },
   { href: "/proof-lab", label: "Proof Lab" },
+  { href: "/reports", label: "Reports" },
   { href: "/playground", label: "Playground" },
 ];
 
