@@ -46,7 +46,10 @@ data/generated_contracts/*.sol
 
 # Local tooling
 .claude/
+core
+core.*
 
 # Pitch deck render artifacts (the .pptx itself is committed)
 sc-audit-benchmark-pitch.pdf
 slide-*.jpg
+.vercel
