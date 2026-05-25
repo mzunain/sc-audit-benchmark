@@ -10,6 +10,7 @@ SKIP_INSTALL=0
 PREPARE_ONLY=0
 REFRESH_STATIC=0
 DOCKER_ANALYZERS=0
+PROOF_DOCKER=0
 PYTHON_BIN="$ROOT_DIR/.venv/bin/python"
 
 log() {
@@ -32,6 +33,7 @@ Options:
   --prepare-only       Install/check deps and bundle data, then exit
   --refresh-static     Rebuild static analyzer data from local PATH tools
   --docker-analyzers   Rebuild static analyzer data inside Docker
+  --proof-docker       Use Docker-backed Foundry for executable Proof Lab harnesses
   --skip-install       Skip Python and npm dependency installation
   --port PORT          Preferred dev-server port (default: 3000 or $PORT)
   --host HOST          Dev-server host (default: 127.0.0.1 or $HOST)
@@ -41,6 +43,7 @@ Examples:
   ./run.sh
   PORT=3005 ./run.sh
   ./run.sh --docker-analyzers
+  ./run.sh --proof-docker
   ./run.sh --prepare-only
 USAGE
 }
@@ -58,6 +61,10 @@ while [[ $# -gt 0 ]]; do
     --docker-analyzers)
       DOCKER_ANALYZERS=1
       REFRESH_STATIC=1
+      shift
+      ;;
+    --proof-docker)
+      PROOF_DOCKER=1
       shift
       ;;
     --skip-install)
@@ -170,6 +177,12 @@ else
   if [[ ! -x "$PYTHON_BIN" ]]; then
     PYTHON_BIN="$(command -v python3)"
   fi
+fi
+
+if [[ "$PROOF_DOCKER" -eq 1 ]]; then
+  need_command docker
+  export SC_AUDIT_PROOF_RUNNER=docker
+  printf 'Proof Lab executable harnesses will use Docker-backed Foundry.\n'
 fi
 
 log "Preparing benchmark data"
