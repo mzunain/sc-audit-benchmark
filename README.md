@@ -9,6 +9,7 @@ contract vulnerabilities. Built for SC Audit Studio at That Crypto Hackathon
 - [Leaderboard](https://sc-audit-benchmark.vercel.app/) — cost-adjusted and pure-quality views
 - [Why these results](https://sc-audit-benchmark.vercel.app/analysis) — per-SWC rationale: which models passed, which failed, and the architectural reason behind the split
 - [Per-vuln breakdown](https://sc-audit-benchmark.vercel.app/breakdown) — heatmap of detection rate by model × SWC class
+- [Proof Lab](https://sc-audit-benchmark.vercel.app/proof-lab) — proof-readiness queue with exploit hypotheses, Foundry test templates, and patch regression gates
 - [Playground](https://sc-audit-benchmark.vercel.app/playground) — paste a Solidity contract, pick a model, get a structured scan report
 
 The playground hits the same free NIM / OpenRouter tiers the benchmark itself uses. The hosted route now has a model allowlist, payload cap, provider timeout, and rate-limit headers, with optional Upstash Redis backing for durable public demos.
@@ -98,6 +99,7 @@ Useful runner options:
 ./run.sh --prepare-only       # install/check deps and bundle data, then stop
 ./run.sh --refresh-static     # rebuild static analyzer data from local tools
 ./run.sh --docker-analyzers   # rebuild static analyzer data in Docker
+./run.sh --proof-docker       # use Docker-backed Foundry for Proof Lab execution
 PORT=3005 ./run.sh            # choose a preferred starting port
 ```
 
@@ -122,11 +124,19 @@ python src/main.py --skip-generation
 
 ## Dashboard
 
-Four Tailwind-polished pages with a shared responsive shell, sticky navigation, dark product headers, and shadcn/Radix controls where native menus would otherwise leak OS styling:
+Five Tailwind-polished pages with a shared responsive shell, sticky navigation, dark product headers, and shadcn/Radix controls where native menus would otherwise leak OS styling:
 - `/` — leaderboard, cost frontier, competitor matrix, production gates, and static analyzer comparators
 - `/analysis` — evidence handoff by model and SWC class
 - `/breakdown` — shadcn-filtered per-model per-SWC detection heatmap
+- `/proof-lab` — proof-readiness queue that turns model/static signals into exploit hypotheses, Foundry test templates, and patch regression handoffs
 - `/playground` — command-center audit workbench with a styled model picker, strategy controls, scan report, exports, and history
+
+Proof Lab is a demo-safe proof planning surface. SWC-107 has an executable
+Foundry harness that materializes a temporary allowlisted project and runs two
+tests: exploit reproduction against a vulnerable vault and patch regression
+against a guarded vault. Other cases remain template-first until they have
+fixtures. Use a local `forge` install, or start with `./run.sh --proof-docker`
+to run through `ghcr.io/foundry-rs/foundry`.
 
 ### Run locally
 
