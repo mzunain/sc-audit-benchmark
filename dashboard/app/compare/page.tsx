@@ -21,7 +21,7 @@ const ALL_MODELS = [
     swcRates: {
       "SWC-107": 0.93, "SWC-101": 0.80, "SWC-104": 0.87, "SWC-105": 0.90,
       "SWC-106": 0.67, "SWC-112": 0.73, "SWC-114": 0.13, "SWC-128": 0.60,
-    },
+    } as Record<string, number>,
   },
   {
     id: "minimax",
@@ -39,7 +39,7 @@ const ALL_MODELS = [
     swcRates: {
       "SWC-107": 0.87, "SWC-101": 0.73, "SWC-104": 0.80, "SWC-105": 0.80,
       "SWC-106": 0.60, "SWC-112": 0.67, "SWC-114": 0.20, "SWC-128": 0.53,
-    },
+    } as Record<string, number>,
   },
   {
     id: "step",
@@ -57,7 +57,7 @@ const ALL_MODELS = [
     swcRates: {
       "SWC-107": 0.27, "SWC-101": 0.20, "SWC-104": 0.23, "SWC-105": 0.20,
       "SWC-106": 0.13, "SWC-112": 0.17, "SWC-114": 0.07, "SWC-128": 0.13,
-    },
+    } as Record<string, number>,
   },
 ];
 
