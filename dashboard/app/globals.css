@@ -8,6 +8,8 @@
   --ink: #1c1917;
   --muted: #78716c;
   --line: #e7e5e4;
+  --emerald: #10b981;
+  --emerald-dim: #059669;
 }
 
 html {
@@ -17,9 +19,7 @@ html {
 body {
   min-height: 100vh;
   overflow-x: hidden;
-  background:
-    linear-gradient(180deg, rgba(250, 250, 249, 1) 0, rgba(245, 245, 244, 1) 520px),
-    #fafaf9;
+  background: #fafaf9;
 }
 
 ::selection {
@@ -28,35 +28,179 @@ body {
 }
 
 @layer components {
+  /* ── Surfaces ───────────────────────────────── */
   .panel {
     @apply bg-white ring-1 ring-stone-200 shadow-sm;
   }
 
   .shell-panel {
-    @apply rounded-lg border border-stone-200 bg-white shadow-sm;
+    @apply rounded-xl border border-stone-200 bg-white shadow-sm;
   }
 
   .dark-panel {
-    @apply rounded-lg border border-stone-800 bg-stone-950 text-white shadow-xl;
+    @apply rounded-xl border border-stone-800 bg-stone-950 text-white shadow-xl;
   }
 
+  /* Glass card for dark hero sections */
+  .glass-card {
+    @apply rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm shadow-lg;
+  }
+
+  /* ── Layout ─────────────────────────────────── */
   .section-shell {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 
-  .eyebrow {
-    @apply text-xs font-semibold uppercase tracking-wider text-emerald-700;
+  /* Dark hero banner at top of each page */
+  .page-hero {
+    @apply bg-stone-950 text-white;
   }
 
+  .page-hero-inner {
+    @apply section-shell py-12 sm:py-16;
+  }
+
+  /* ── Typography ─────────────────────────────── */
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-widest text-emerald-400;
+  }
+
+  .eyebrow-dark {
+    @apply text-xs font-semibold uppercase tracking-widest text-emerald-400;
+  }
+
+  .hero-title {
+    @apply text-3xl sm:text-4xl font-bold tracking-tight text-white;
+  }
+
+  .hero-sub {
+    @apply text-base sm:text-lg text-stone-400 max-w-2xl;
+  }
+
+  .section-title {
+    @apply text-xl font-semibold text-stone-950;
+  }
+
+  /* ── Metric cards ───────────────────────────── */
   .metric-label {
-    @apply text-xs font-semibold uppercase tracking-wide text-stone-500;
+    @apply text-[11px] font-semibold uppercase tracking-widest text-stone-500;
+  }
+
+  .metric-label-inv {
+    @apply text-[11px] font-semibold uppercase tracking-widest text-stone-400;
   }
 
   .metric-value {
-    @apply text-2xl font-semibold tracking-tight text-stone-950 tabular-nums;
+    @apply text-2xl font-bold tracking-tight text-stone-950 tabular-nums;
   }
 
+  .metric-value-inv {
+    @apply text-2xl font-bold tracking-tight text-white tabular-nums;
+  }
+
+  /* ── Stat card (dark bg, used in heroes) ────── */
+  .stat-card {
+    @apply glass-card px-5 py-4;
+  }
+
+  /* ── Badges ─────────────────────────────────── */
+  .badge {
+    @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold;
+  }
+
+  .badge-critical {
+    @apply badge bg-red-100 text-red-800;
+  }
+
+  .badge-high {
+    @apply badge bg-orange-100 text-orange-800;
+  }
+
+  .badge-medium {
+    @apply badge bg-amber-100 text-amber-800;
+  }
+
+  .badge-good {
+    @apply badge bg-emerald-100 text-emerald-800;
+  }
+
+  .badge-neutral {
+    @apply badge bg-stone-100 text-stone-700;
+  }
+
+  /* ── Buttons ────────────────────────────────── */
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm
+           bg-emerald-600 hover:bg-emerald-500 text-white transition-colors
+           focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm
+           bg-stone-100 hover:bg-stone-200 text-stone-900 border border-stone-200 transition-colors
+           focus:outline-none focus:ring-2 focus:ring-stone-400 focus:ring-offset-2;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm
+           text-stone-600 hover:bg-stone-100 hover:text-stone-950 transition-colors
+           focus:outline-none focus:ring-2 focus:ring-stone-400 focus:ring-offset-2;
+  }
+
+  /* ── Tables ─────────────────────────────────── */
+  .data-table {
+    @apply w-full text-sm;
+  }
+
+  .data-table thead {
+    @apply border-b border-stone-200 bg-stone-50;
+  }
+
+  .data-table th {
+    @apply px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-stone-500;
+  }
+
+  .data-table td {
+    @apply px-4 py-3 text-stone-900;
+  }
+
+  .data-table tbody tr {
+    @apply border-b border-stone-100 last:border-0 hover:bg-stone-50/70 transition-colors;
+  }
+
+  /* ── Code blocks ────────────────────────────── */
+  .code-block {
+    @apply rounded-lg bg-stone-950 p-4 font-mono text-xs leading-relaxed overflow-x-auto;
+  }
+
+  .code-block-bad {
+    @apply rounded-lg border border-red-900/40 bg-red-950/30 p-4 font-mono text-xs leading-relaxed overflow-x-auto;
+  }
+
+  .code-block-good {
+    @apply rounded-lg border border-emerald-900/40 bg-emerald-950/30 p-4 font-mono text-xs leading-relaxed overflow-x-auto;
+  }
+
+  /* ── Progress bars ──────────────────────────── */
+  .progress-bar {
+    @apply w-full h-1.5 bg-stone-100 rounded-full overflow-hidden;
+  }
+
+  .progress-fill-green {
+    @apply h-full bg-emerald-500 rounded-full transition-all duration-500;
+  }
+
+  .progress-fill-red {
+    @apply h-full bg-red-500 rounded-full transition-all duration-500;
+  }
+
+  /* ── Focus ring ─────────────────────────────── */
   .focus-ring {
     @apply focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-stone-50;
+  }
+
+  /* ── Dividers ───────────────────────────────── */
+  .section-divider {
+    @apply border-t border-stone-200;
   }
 }

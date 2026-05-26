@@ -8,6 +8,9 @@ const LINKS = [
   { href: "/breakdown", label: "Coverage" },
   { href: "/proof-lab", label: "Proof Lab" },
   { href: "/reports", label: "Reports" },
+  { href: "/false-positives", label: "FP Analysis" },
+  { href: "/remediation", label: "Remediation" },
+  { href: "/risk-matrix", label: "Risk Matrix" },
   { href: "/playground", label: "Playground" },
 ];
 
@@ -15,24 +18,26 @@ export function Nav() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-30 border-b border-stone-200/80 bg-white/92 backdrop-blur supports-[backdrop-filter]:bg-white/82">
-      <div className="section-shell flex min-h-16 flex-col items-stretch justify-between gap-3 py-3 sm:flex-row sm:items-center sm:py-2">
-        <a href="/" className="flex shrink-0 items-center gap-2.5 font-semibold tracking-tight text-stone-900">
-          <span
-            aria-hidden
-            className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-stone-950 shadow-sm"
-          >
-            <span className="block h-3.5 w-3.5 rounded-sm bg-emerald-400" />
+    <header className="sticky top-0 z-30 border-b border-stone-900/80 bg-stone-950">
+      <div className="section-shell flex min-h-14 flex-col items-stretch justify-between gap-2 py-2 sm:flex-row sm:items-center">
+        {/* Logo */}
+        <a href="/" className="flex shrink-0 items-center gap-2.5 group">
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-emerald-500 shadow-md shadow-emerald-900/40">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
+              <path d="M7 1L12.196 4V10L7 13L1.804 10V4L7 1Z" stroke="white" strokeWidth="1.5" strokeLinejoin="round"/>
+              <circle cx="7" cy="7" r="2" fill="white"/>
+            </svg>
           </span>
-          <span className="leading-tight">
-            <span className="block text-sm sm:text-base">SC Audit Benchmark</span>
-            <span className="hidden sm:block text-[11px] font-medium text-stone-500">
-              LLM security model console
+          <span>
+            <span className="block text-sm font-semibold text-white leading-tight">SC Audit Benchmark</span>
+            <span className="hidden sm:block text-[10px] font-medium text-stone-500 leading-tight">
+              LLM security console
             </span>
           </span>
         </a>
 
-        <nav className="flex w-full min-w-0 items-center gap-1 overflow-x-auto rounded-lg border border-stone-200 bg-white p-1 shadow-sm sm:w-auto">
+        {/* Nav links */}
+        <nav className="flex w-full min-w-0 items-center gap-0.5 overflow-x-auto sm:w-auto">
           {LINKS.map(({ href, label }) => {
             const active = href === "/" ? pathname === "/" : pathname.startsWith(href);
             return (
@@ -40,10 +45,10 @@ export function Nav() {
                 key={href}
                 href={href}
                 className={[
-                  "relative whitespace-nowrap rounded-md px-3 py-2 text-sm transition-colors focus-ring",
+                  "whitespace-nowrap rounded-md px-3 py-1.5 text-xs font-medium transition-colors focus-ring",
                   active
-                    ? "bg-stone-950 font-semibold text-white shadow-sm"
-                    : "text-stone-600 hover:bg-stone-100 hover:text-stone-950",
+                    ? "bg-emerald-500/20 text-emerald-400 ring-1 ring-emerald-500/30"
+                    : "text-stone-400 hover:bg-white/5 hover:text-white",
                 ].join(" ")}
               >
                 {label}
