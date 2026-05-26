@@ -11,6 +11,7 @@ const LINKS = [
   { href: "/false-positives", label: "FP Analysis" },
   { href: "/remediation", label: "Remediation" },
   { href: "/risk-matrix", label: "Risk Matrix" },
+  { href: "/cost-calculator", label: "Cost Calc" },
   { href: "/playground", label: "Playground" },
 ];
 
