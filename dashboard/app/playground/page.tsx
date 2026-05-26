@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Activity,
   AlertTriangle,
@@ -26,6 +26,8 @@ import {
   Sparkles,
   Terminal,
   Trash2,
+  Upload,
+  X,
   Zap,
 } from "lucide-react";
 import {
@@ -347,8 +349,119 @@ function buildMarkdownPacket(entry: ScanHistoryEntry) {
   return lines.join("\n");
 }
 
+// ---------------------------------------------------------------------------
+// File Upload Component
+// ---------------------------------------------------------------------------
+
+interface UploadedFile {
+  name: string;
+  size: number;
+  content: string;
+}
+
+function FileUploadZone({
+  onFile,
+  uploadedFile,
+  onClear,
+}: {
+  onFile: (file: UploadedFile) => void;
+  uploadedFile: UploadedFile | null;
+  onClear: () => void;
+}) {
+  const [dragOver, setDragOver] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const processFile = (file: File) => {
+    setError(null);
+    if (!file.name.endsWith(".sol")) {
+      setError("Only .sol (Solidity) files are supported.");
+      return;
+    }
+    if (file.size > 256_000) {
+      setError("File is too large (max 256 KB).");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const content = e.target?.result as string;
+      onFile({ name: file.name, size: file.size, content });
+    };
+    reader.readAsText(file);
+  };
+
+  const onDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+    const file = e.dataTransfer.files[0];
+    if (file) processFile(file);
+  };
+
+  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) processFile(file);
+    e.target.value = "";
+  };
+
+  if (uploadedFile) {
+    return (
+      <div className="flex items-center justify-between gap-3 rounded-md border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm">
+        <div className="flex items-center gap-2 min-w-0">
+          <FileCode2 className="h-4 w-4 shrink-0 text-emerald-700" />
+          <span className="truncate font-semibold text-emerald-900">{uploadedFile.name}</span>
+          <span className="shrink-0 text-emerald-600 text-xs">({(uploadedFile.size / 1024).toFixed(1)} KB)</span>
+        </div>
+        <button
+          onClick={onClear}
+          className="shrink-0 rounded-md p-1 text-emerald-700 hover:bg-emerald-200 transition"
+          aria-label="Clear uploaded file"
+        >
+          <X className="h-3.5 w-3.5" />
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div
+        onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+        onDragLeave={() => setDragOver(false)}
+        onDrop={onDrop}
+        onClick={() => inputRef.current?.click()}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => e.key === "Enter" && inputRef.current?.click()}
+        className={[
+          "cursor-pointer rounded-md border-2 border-dashed px-4 py-4 text-center text-sm transition",
+          dragOver
+            ? "border-emerald-400 bg-emerald-50"
+            : "border-stone-600 hover:border-emerald-400 hover:bg-emerald-50/20",
+        ].join(" ")}
+      >
+        <Upload className="mx-auto h-5 w-5 text-stone-400 mb-2" />
+        <span className="text-stone-300 font-medium">Drop a .sol file or click to browse</span>
+        <span className="block mt-1 text-xs text-stone-500">Max 256 KB · Solidity only</span>
+      </div>
+      {error && <p className="mt-2 text-xs text-rose-400">{error}</p>}
+      <input
+        ref={inputRef}
+        type="file"
+        accept=".sol"
+        onChange={onInputChange}
+        className="hidden"
+      />
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Main page
+// ---------------------------------------------------------------------------
+
 export default function Playground() {
   const [contractCode, setContractCode] = useState(EXAMPLES[0].code);
+  const [uploadedFile, setUploadedFile] = useState<UploadedFile | null>(null);
   const [scanResult, setScanResult] = useState<ScanResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [model, setModel] = useState("nim:qwen/qwen3-coder-480b-a35b-instruct");
@@ -464,6 +577,22 @@ export default function Playground() {
   const loadExample = (example: (typeof EXAMPLES)[number]) => {
     setContractCode(example.code);
     setRiskProfile(example.risk);
+    setScanResult(null);
+    setUploadedFile(null);
+  };
+
+  const handleUploadedFile = (file: UploadedFile) => {
+    setUploadedFile(file);
+    setContractCode(file.content);
+    setScanResult(null);
+    // Auto-set risk profile from filename (strip .sol)
+    setRiskProfile(file.name.replace(/\.sol$/i, "").replace(/[-_]/g, " "));
+  };
+
+  const clearUploadedFile = () => {
+    setUploadedFile(null);
+    setContractCode(EXAMPLES[0].code);
+    setRiskProfile(EXAMPLES[0].risk);
     setScanResult(null);
   };
 
@@ -582,12 +711,21 @@ export default function Playground() {
               </div>
 
               <div className="bg-[#0c0d0d] p-3 sm:p-4">
+                {/* File upload zone */}
+                <div className="mb-3">
+                  <FileUploadZone
+                    onFile={handleUploadedFile}
+                    uploadedFile={uploadedFile}
+                    onClear={clearUploadedFile}
+                  />
+                </div>
+
                 <div className="mb-3 flex items-center justify-between gap-3 text-xs text-stone-400">
                   <div className="flex items-center gap-2">
                     <span className="h-2.5 w-2.5 rounded-full bg-rose-400" />
                     <span className="h-2.5 w-2.5 rounded-full bg-amber-300" />
                     <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
-                    <span className="ml-2 font-mono">contract.sol</span>
+                    <span className="ml-2 font-mono">{uploadedFile ? uploadedFile.name : "contract.sol"}</span>
                   </div>
                   <span className="font-mono">{insights.chars.toLocaleString()} chars</span>
                 </div>

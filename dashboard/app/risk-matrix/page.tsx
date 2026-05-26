@@ -49,7 +49,7 @@ const MODEL_COMBOS = [
     secondary: "Slither",
     coverage: 94,
     rationale: "Tokens have well-understood patterns; code-tuned Qwen excels. Slither catches arithmetic edge cases.",
-    swcCoverage: { "SWC-101": true, "SWC-104": true, "SWC-105": true, "SWC-107": true, "SWC-114": false },
+    swcCoverage: { "SWC-101": true, "SWC-104": true, "SWC-105": true, "SWC-107": true, "SWC-114": false } as Record<string, boolean>,
   },
   {
     type: "Vault / DeFi Contracts",
@@ -57,7 +57,7 @@ const MODEL_COMBOS = [
     secondary: "Nemotron + Aderyn",
     coverage: 91,
     rationale: "Vaults need reentrancy depth. 2-model consensus on withdrawals. Aderyn for access control.",
-    swcCoverage: { "SWC-101": true, "SWC-104": true, "SWC-105": true, "SWC-107": true, "SWC-114": false },
+    swcCoverage: { "SWC-101": true, "SWC-104": true, "SWC-105": true, "SWC-107": true, "SWC-114": false } as Record<string, boolean>,
   },
   {
     type: "DEX / AMM Contracts",
@@ -65,7 +65,7 @@ const MODEL_COMBOS = [
     secondary: "MiniMax + Slither + Aderyn",
     coverage: 96,
     rationale: "AMMs need all three: code specialist for logic, reasoning hybrid for MEV patterns, static for determinism.",
-    swcCoverage: { "SWC-101": true, "SWC-104": true, "SWC-105": true, "SWC-107": true, "SWC-114": true },
+    swcCoverage: { "SWC-101": true, "SWC-104": true, "SWC-105": true, "SWC-107": true, "SWC-114": true } as Record<string, boolean>,
   },
   {
     type: "Governance / DAO Contracts",
@@ -73,7 +73,7 @@ const MODEL_COMBOS = [
     secondary: "Qwen3-Coder + Slither",
     coverage: 88,
     rationale: "Governance attacks involve temporal patterns; reasoning hybrid catches them where pure code LLMs miss.",
-    swcCoverage: { "SWC-101": true, "SWC-104": false, "SWC-105": true, "SWC-107": true, "SWC-114": true },
+    swcCoverage: { "SWC-101": true, "SWC-104": false, "SWC-105": true, "SWC-107": true, "SWC-114": true } as Record<string, boolean>,
   },
 ];
 
