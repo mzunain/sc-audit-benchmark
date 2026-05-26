@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { Download, FileJson, FileText } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { useEffect, useState } from "react";
+import { FileJson, FileText, Download } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface ReportData {
   timestamp: string;
@@ -130,160 +130,130 @@ ${reportData.findings.map(f => `| ${f.swc} | ${f.name} | ${f.severity} | ${(f.de
 
   if (loading) {
     return (
-      <div className="section-shell py-12">
-        <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-stone-200 rounded w-64"></div>
-          <div className="h-4 bg-stone-200 rounded w-full"></div>
-        </div>
+      <div className="min-h-screen bg-stone-50">
+        <div className="page-hero"><div className="page-hero-inner"><div className="animate-pulse h-10 bg-white/10 rounded w-64 mb-4" /><div className="animate-pulse h-4 bg-white/5 rounded w-96" /></div></div>
       </div>
     );
   }
 
   if (!reportData) {
     return (
-      <div className="section-shell py-12">
-        <div className="dark-panel">
-          <p className="text-stone-300">Unable to load benchmark data. Please run the Python pipeline first.</p>
-        </div>
+      <div className="min-h-screen bg-stone-50">
+        <div className="page-hero"><div className="page-hero-inner"><p className="text-stone-400">Run the Python pipeline first to generate benchmark data.</p></div></div>
       </div>
     );
   }
 
   return (
-    <div className="section-shell py-12 space-y-8">
-      {/* Header */}
-      <div className="space-y-2">
-        <p className="eyebrow">Audit Reports</p>
-        <h1 className="text-4xl font-bold text-stone-950">Professional Audit Report Generator</h1>
-        <p className="text-lg text-stone-600">Convert benchmark findings into client-ready reports with CVSS scores, remediation priorities, and model consensus analysis.</p>
-      </div>
+    <div className="min-h-screen bg-stone-50">
+      {/* Hero */}
+      <section className="page-hero">
+        <div className="page-hero-inner">
+          <p className="eyebrow mb-3">Audit Reports</p>
+          <h1 className="hero-title mb-3">Professional Audit Report Generator</h1>
+          <p className="hero-sub mb-10">
+            Convert benchmark findings into client-ready deliverables with consensus signals,
+            remediation priorities, and model recommendations. Export as Markdown or JSON.
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="stat-card"><p className="metric-label-inv mb-1">Vulnerabilities</p><p className="metric-value-inv">{reportData.totalVulnerabilities}</p></div>
+            <div className="stat-card"><p className="metric-label-inv mb-1">Avg Detection</p><p className="metric-value-inv">{(reportData.avgDetectionRate * 100).toFixed(1)}%</p></div>
+            <div className="stat-card"><p className="metric-label-inv mb-1">Models Tested</p><p className="metric-value-inv">{reportData.totalModels}</p></div>
+            <div className="stat-card"><p className="metric-label-inv mb-1">Report Date</p><p className="text-base font-semibold text-white">{reportData.timestamp}</p></div>
+          </div>
+        </div>
+      </section>
 
-      {/* Executive Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="shell-panel">
-          <p className="metric-label">Total Vulnerabilities</p>
-          <p className="metric-value">{reportData.totalVulnerabilities}</p>
+      <div className="section-shell py-10 space-y-8">
+        {/* Export Controls */}
+        <div className="shell-panel p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <p className="font-semibold text-stone-950">Export Report</p>
+            <p className="text-sm text-stone-500 mt-0.5">Markdown for client delivery. JSON for tooling integration.</p>
+          </div>
+          <div className="flex gap-3">
+            <button onClick={() => downloadReport("markdown")} className="btn-primary">
+              <FileText className="w-4 h-4" /> Download Markdown
+            </button>
+            <button onClick={() => downloadReport("json")} className="btn-secondary">
+              <FileJson className="w-4 h-4" /> Download JSON
+            </button>
+          </div>
         </div>
-        <div className="shell-panel">
-          <p className="metric-label">Avg Detection Rate</p>
-          <p className="metric-value">{(reportData.avgDetectionRate * 100).toFixed(1)}%</p>
-        </div>
-        <div className="shell-panel">
-          <p className="metric-label">Models Evaluated</p>
-          <p className="metric-value">{reportData.totalModels}</p>
-        </div>
-        <div className="shell-panel">
-          <p className="metric-label">Report Date</p>
-          <p className="metric-value text-sm">{reportData.timestamp}</p>
-        </div>
-      </div>
 
-      {/* Export Controls */}
-      <div className="flex gap-3 flex-wrap">
-        <button
-          onClick={() => downloadReport('markdown')}
-          className={cn(
-            'inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium',
-            'bg-emerald-600 hover:bg-emerald-700 text-white transition-colors focus-ring'
-          )}
-        >
-          <FileText className="w-4 h-4" />
-          Download Markdown
-        </button>
-        <button
-          onClick={() => downloadReport('json')}
-          className={cn(
-            'inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium',
-            'bg-stone-600 hover:bg-stone-700 text-white transition-colors focus-ring'
-          )}
-        >
-          <FileJson className="w-4 h-4" />
-          Download JSON
-        </button>
-      </div>
-
-      {/* Consensus Breakdown */}
-      <div className="shell-panel p-6 space-y-4">
-        <h2 className="text-xl font-semibold text-stone-950">Model Consensus Breakdown</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          {Object.entries(reportData.consensusBreakdown).map(([consensus, count]) => (
-            <div key={consensus} className="bg-stone-50 p-4 rounded border border-stone-200">
-              <p className="text-sm text-stone-600 font-medium">{consensus}</p>
-              <p className="text-2xl font-bold text-stone-950 mt-1">{count}</p>
-              <p className="text-xs text-stone-500 mt-1">{Math.round((count / reportData.totalVulnerabilities) * 100)}% of vulns</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Findings Table */}
-      <div className="shell-panel overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead className="bg-stone-50 border-b border-stone-200">
-            <tr>
-              <th className="px-4 py-3 text-left font-semibold text-stone-950">SWC</th>
-              <th className="px-4 py-3 text-left font-semibold text-stone-950">Class</th>
-              <th className="px-4 py-3 text-left font-semibold text-stone-950">Severity</th>
-              <th className="px-4 py-3 text-left font-semibold text-stone-950">Detection Rate</th>
-              <th className="px-4 py-3 text-left font-semibold text-stone-950">Best Model</th>
-              <th className="px-4 py-3 text-left font-semibold text-stone-950">Recommendation</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-stone-200">
-            {reportData.findings.map((finding) => (
-              <tr key={finding.swc} className="hover:bg-stone-50">
-                <td className="px-4 py-3 font-mono text-stone-600">{finding.swc}</td>
-                <td className="px-4 py-3 text-stone-900">{finding.name}</td>
-                <td className="px-4 py-3">
-                  <span className={cn(
-                    'px-2 py-1 text-xs font-semibold rounded',
-                    finding.severity === 'Critical' ? 'bg-red-100 text-red-800' :
-                    finding.severity === 'High' ? 'bg-orange-100 text-orange-800' :
-                    'bg-yellow-100 text-yellow-800'
-                  )}>
-                    {finding.severity}
-                  </span>
-                </td>
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-2">
-                    <div className="w-16 h-2 bg-stone-200 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-emerald-500"
-                        style={{ width: `${finding.detectionRate * 100}%` }}
-                      />
-                    </div>
-                    <span className="text-stone-900 font-medium w-12">{(finding.detectionRate * 100).toFixed(0)}%</span>
-                  </div>
-                </td>
-                <td className="px-4 py-3 text-stone-900">{finding.bestModel}</td>
-                <td className="px-4 py-3 text-stone-600 text-xs">{finding.recommendation}</td>
-              </tr>
+        {/* Consensus Breakdown */}
+        <div className="shell-panel">
+          <div className="px-6 pt-6 pb-4 border-b border-stone-100">
+            <h2 className="section-title">Model Consensus Breakdown</h2>
+            <p className="text-sm text-stone-500 mt-1">How many of your 3 scanners must agree before filing a finding.</p>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-stone-100">
+            {Object.entries(reportData.consensusBreakdown).map(([consensus, count]) => (
+              <div key={consensus} className="px-6 py-5 text-center">
+                <p className="text-3xl font-bold text-stone-950 tabular-nums">{count}</p>
+                <p className="text-xs font-semibold text-stone-600 mt-1">{consensus}</p>
+                <p className="text-[11px] text-stone-400 mt-0.5">{Math.round((count / reportData.totalVulnerabilities) * 100)}% of vulns</p>
+              </div>
             ))}
-          </tbody>
-        </table>
-      </div>
+          </div>
+        </div>
 
-      {/* Strategy Recommendations */}
-      <div className="shell-panel p-6 space-y-4">
-        <h2 className="text-xl font-semibold text-stone-950">Audit Strategy Recommendations</h2>
-        <ul className="space-y-3 text-stone-700">
-          <li className="flex gap-3">
-            <span className="text-emerald-600 font-bold">→</span>
-            <span><strong>Critical:</strong> Multi-model consensus (all 3 models must agree)</span>
-          </li>
-          <li className="flex gap-3">
-            <span className="text-emerald-600 font-bold">→</span>
-            <span><strong>High:</strong> Primary + secondary model for confidence</span>
-          </li>
-          <li className="flex gap-3">
-            <span className="text-emerald-600 font-bold">→</span>
-            <span><strong>Medium:</strong> Single model + static analyzer cross-check</span>
-          </li>
-          <li className="flex gap-3">
-            <span className="text-emerald-600 font-bold">→</span>
-            <span><strong>False Positives:</strong> Manual review for low-confidence findings</span>
-          </li>
-        </ul>
+        {/* Findings Table */}
+        <div className="shell-panel overflow-x-auto">
+          <div className="px-6 pt-6 pb-4 border-b border-stone-100">
+            <h2 className="section-title">Detailed Findings</h2>
+          </div>
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>SWC</th><th>Class</th><th>Severity</th><th>Detection Rate</th><th>Best Model</th><th>Recommendation</th>
+              </tr>
+            </thead>
+            <tbody>
+              {reportData.findings.map((f) => (
+                <tr key={f.swc}>
+                  <td className="font-mono text-stone-500">{f.swc}</td>
+                  <td className="font-medium">{f.name}</td>
+                  <td>
+                    <span className={cn(
+                      "badge",
+                      f.severity === "Critical" ? "badge-critical" :
+                      f.severity === "High" ? "badge-high" : "badge-medium"
+                    )}>{f.severity}</span>
+                  </td>
+                  <td>
+                    <div className="flex items-center gap-2">
+                      <div className="w-16 progress-bar">
+                        <div className="progress-fill-green" style={{ width: `${f.detectionRate * 100}%` }} />
+                      </div>
+                      <span className="text-stone-900 font-semibold tabular-nums w-10">{(f.detectionRate * 100).toFixed(0)}%</span>
+                    </div>
+                  </td>
+                  <td className="text-stone-700">{f.bestModel}</td>
+                  <td className="text-stone-500 text-xs">{f.recommendation}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Strategy */}
+        <div className="dark-panel p-6 space-y-4">
+          <h2 className="text-lg font-semibold text-white">Audit Strategy Recommendations</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {[
+              { label: "Critical", detail: "All 3 models must agree. Proof Lab harness required before filing." },
+              { label: "High", detail: "Primary + secondary model. Static analyzer cross-check." },
+              { label: "Medium", detail: "Single Qwen3-Coder scan + Slither confirmation sufficient." },
+              { label: "False Positives", detail: "Manual review for any finding where models disagree." },
+            ].map(s => (
+              <div key={s.label} className="glass-card p-4">
+                <p className="text-xs font-semibold text-emerald-400 uppercase tracking-wide mb-1">{s.label}</p>
+                <p className="text-sm text-stone-300">{s.detail}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
