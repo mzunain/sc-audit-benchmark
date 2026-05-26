@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -286,31 +286,61 @@ export default function Leaderboard() {
                   {sorted.map((row, index) => {
                     const meta = modelMeta(row.model);
                     return (
-                      <tr key={row.model} className="border-b border-stone-100 last:border-0 hover:bg-stone-50/70">
-                        <td className="px-5 py-4 text-sm font-semibold text-stone-500">#{index + 1}</td>
-                        <td className="px-5 py-4 align-middle">
-                          <div className="font-semibold text-stone-950">{meta.short}</div>
-                          <div className="mt-1 break-all font-mono text-xs leading-5 text-stone-400">{row.model}</div>
-                        </td>
-                        <td className="px-5 py-4 align-middle">
-                          <span className={`inline-flex whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-semibold ${meta.tone}`}>
-                            {meta.philosophy}
-                          </span>
-                          <div className="mt-2 max-w-[280px] text-xs leading-5 text-stone-600">{meta.bestFor}</div>
-                        </td>
-                        <td className="px-5 py-4 text-right text-sm tabular-nums text-stone-700">
-                          {formatPct(row.detection)}
-                        </td>
-                        <td className="px-5 py-4 text-right text-sm tabular-nums text-stone-700">
-                          {row.quality.toFixed(1)}
-                        </td>
-                        <td className="px-5 py-4 text-right text-sm tabular-nums text-stone-700">
-                          {formatUsd(row.cost_usd)}
-                        </td>
-                        <td className="px-5 py-4 text-right text-sm font-semibold tabular-nums text-stone-950">
-                          {compactValue(row.value)}
-                        </td>
-                      </tr>
+                      <Fragment key={row.model}>
+                        <tr className="hover:bg-stone-50/70">
+                          <td className="px-5 pt-4 pb-1 text-sm font-semibold text-stone-500">#{index + 1}</td>
+                          <td className="px-5 pt-4 pb-1 align-top">
+                            <div className="font-semibold text-stone-950">{meta.short}</div>
+                            <div className="mt-1 break-all font-mono text-xs leading-5 text-stone-400">{row.model}</div>
+                          </td>
+                          <td className="px-5 pt-4 pb-1 align-top">
+                            <span className={`inline-flex whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-semibold ${meta.tone}`}>
+                              {meta.philosophy}
+                            </span>
+                            <div className="mt-2 max-w-[280px] text-xs leading-5 text-stone-600">{meta.bestFor}</div>
+                          </td>
+                          <td className="px-5 pt-4 pb-1 text-right text-sm tabular-nums text-stone-700">
+                            {formatPct(row.detection)}
+                          </td>
+                          <td className="px-5 pt-4 pb-1 text-right text-sm tabular-nums text-stone-700">
+                            {row.quality.toFixed(1)}
+                          </td>
+                          <td className="px-5 pt-4 pb-1 text-right text-sm tabular-nums text-stone-700">
+                            {formatUsd(row.cost_usd)}
+                          </td>
+                          <td className="px-5 pt-4 pb-1 text-right text-sm font-semibold tabular-nums text-stone-950">
+                            {compactValue(row.value)}
+                          </td>
+                        </tr>
+
+                        {/* SWC per-class coverage chips */}
+                        <tr className="border-b border-stone-100">
+                          <td className="pb-3 pt-0" />
+                          <td colSpan={6} className="px-5 pb-3 pt-0">
+                            <div className="flex flex-wrap gap-1.5">
+                              {(breakdown?.swc_ids ?? []).map((swc) => {
+                                const cell = breakdown?.breakdown[row.model]?.[swc];
+                                const rate = cell && cell.total > 0 ? cell.found / cell.total : null;
+                                const bg = rate === null
+                                  ? "bg-stone-100 text-stone-400"
+                                  : rate >= 0.8
+                                  ? "bg-emerald-100 text-emerald-800"
+                                  : rate >= 0.5
+                                  ? "bg-amber-100 text-amber-800"
+                                  : "bg-red-100 text-red-800";
+                                return (
+                                  <span key={swc} className={`rounded px-2 py-0.5 font-mono text-[10px] font-semibold ${bg}`}>
+                                    {swc} {rate !== null ? `${Math.round(rate * 100)}%` : "—"}
+                                  </span>
+                                );
+                              })}
+                              {!breakdown && (
+                                <span className="text-[10px] text-stone-400 italic">SWC data loading…</span>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      </Fragment>
                     );
                   })}
                   {sorted.length === 0 && (
@@ -325,29 +355,32 @@ export default function Leaderboard() {
             </div>
           </div>
 
-          <div className="grid gap-6">
-            <div className="panel rounded-lg p-5">
+          <div className="flex flex-col gap-6">
+            {/* Scatter: quality vs cost */}
+            <div className="panel flex flex-col rounded-lg p-5">
               <div className="eyebrow">Score frontier</div>
               <h2 className="mt-1 text-xl font-semibold tracking-tight text-stone-950">
-                Quality versus commercial cost
+                Quality vs commercial cost
               </h2>
-              <div className="mt-5 h-72">
+              <div className="mt-4 flex-1" style={{ minHeight: 220 }}>
                 <ResponsiveContainer width="100%" height="100%">
-                  <ScatterChart margin={{ top: 10, right: 18, bottom: 24, left: 0 }}>
+                  <ScatterChart margin={{ top: 10, right: 20, bottom: 28, left: 0 }}>
                     <CartesianGrid stroke="#e7e5e4" strokeDasharray="3 3" />
                     <XAxis
                       dataKey="cost"
                       name="Cost"
-                      tickFormatter={(value) => `$${Number(value).toFixed(3)}`}
+                      tickFormatter={(v) => `$${Number(v).toFixed(3)}`}
                       fontSize={11}
                       stroke="#78716c"
                     />
-                    <YAxis dataKey="quality" name="Quality" fontSize={11} stroke="#78716c" />
-                    <ZAxis dataKey="detection" range={[80, 240]} />
+                    <YAxis dataKey="quality" name="Quality" fontSize={11} stroke="#78716c" domain={[0, 70]} />
+                    <ZAxis dataKey="detection" range={[120, 320]} />
                     <Tooltip
                       cursor={{ strokeDasharray: "3 3" }}
                       contentStyle={{ border: "1px solid #e7e5e4", borderRadius: 8, fontSize: 12 }}
-                      formatter={(value, name) => [name === "cost" ? formatUsd(Number(value)) : Number(value).toFixed(1), name]}
+                      formatter={(value, name) =>
+                        [name === "cost" ? formatUsd(Number(value)) : Number(value).toFixed(1), name]
+                      }
                     />
                     <Scatter data={frontierData}>
                       {frontierData.map((entry) => (
@@ -357,28 +390,45 @@ export default function Leaderboard() {
                   </ScatterChart>
                 </ResponsiveContainer>
               </div>
-              <p className="text-sm leading-relaxed text-stone-600">
+              {/* Legend */}
+              <div className="mt-2 flex flex-wrap gap-3">
+                {frontierData.map((e) => (
+                  <span key={e.model} className="flex items-center gap-1.5 text-xs text-stone-600">
+                    <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: e.fill }} />
+                    {e.model}
+                  </span>
+                ))}
+              </div>
+              <p className="mt-2 text-xs leading-relaxed text-stone-500">
                 {valueMultiplier > 0
-                  ? `The current leader is ${valueMultiplier.toFixed(1)}x stronger on value than the runner-up in this run.`
-                  : "Run benchmark data to calculate the value frontier."}
+                  ? `Leader is ${valueMultiplier.toFixed(1)}× stronger value than runner-up. Bubble size = detection rate.`
+                  : "Run benchmark to populate frontier."}
               </p>
             </div>
 
-            <div className="panel rounded-lg p-5">
+            {/* Bar: selected sort metric per model */}
+            <div className="panel flex flex-col rounded-lg p-5">
               <div className="eyebrow">Benchmark signal</div>
               <h2 className="mt-1 text-xl font-semibold tracking-tight text-stone-950">
-                {hardestSwc ? `Strongest class: ${hardestSwc}` : "Coverage profile"}
+                {sortBy === "value" ? "Cost-adjusted value score" : sortBy === "quality" ? "Explanation quality score" : "Raw detection rate (%)"}
               </h2>
-              <div className="mt-5 h-56">
+              <div className="mt-4 flex-1" style={{ minHeight: 200 }}>
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={chartData} margin={{ top: 8, right: 8, bottom: 38, left: 0 }}>
+                  <BarChart data={chartData} margin={{ top: 8, right: 12, bottom: 42, left: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#e7e5e4" vertical={false} />
-                    <XAxis dataKey="label" angle={-12} textAnchor="end" height={54} fontSize={11} stroke="#78716c" />
+                    <XAxis
+                      dataKey="label"
+                      angle={-14}
+                      textAnchor="end"
+                      height={56}
+                      fontSize={11}
+                      stroke="#78716c"
+                    />
                     <YAxis fontSize={11} stroke="#78716c" />
                     <Tooltip
                       contentStyle={{ backgroundColor: "#fff", border: "1px solid #e7e5e4", borderRadius: 8, fontSize: 12 }}
                     />
-                    <Bar dataKey={sortBy} radius={[4, 4, 0, 0]}>
+                    <Bar dataKey={sortBy} radius={[5, 5, 0, 0]} maxBarSize={72}>
                       {chartData.map((entry) => (
                         <Cell key={entry.model} fill={entry.fill} />
                       ))}
@@ -386,6 +436,17 @@ export default function Leaderboard() {
                   </BarChart>
                 </ResponsiveContainer>
               </div>
+              {/* Key insight callout */}
+              {best && runnerUp && (
+                <div className="mt-3 rounded-md bg-stone-50 px-4 py-3 text-xs leading-5 text-stone-600">
+                  <span className="font-semibold text-stone-950">{modelMeta(best.model).short}</span> leads on{" "}
+                  <span className="font-semibold">{sortBy}</span> with{" "}
+                  {sortBy === "value" ? compactValue(best.value) : sortBy === "quality" ? best.quality.toFixed(1) : formatPct(best.detection)}.
+                  Runner-up is{" "}
+                  <span className="font-semibold">{modelMeta(runnerUp.model).short}</span> at{" "}
+                  {sortBy === "value" ? compactValue(runnerUp.value) : sortBy === "quality" ? runnerUp.quality.toFixed(1) : formatPct(runnerUp.detection)}.
+                </div>
+              )}
             </div>
           </div>
         </div>
