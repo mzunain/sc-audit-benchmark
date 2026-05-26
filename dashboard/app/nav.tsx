@@ -12,6 +12,7 @@ const LINKS = [
   { href: "/remediation", label: "Remediation" },
   { href: "/risk-matrix", label: "Risk Matrix" },
   { href: "/cost-calculator", label: "Cost Calc" },
+  { href: "/compare", label: "Compare" },
   { href: "/playground", label: "Playground" },
 ];
 
