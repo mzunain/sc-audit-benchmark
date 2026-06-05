@@ -1,5 +1,10 @@
 # Generative Solidity Vulnerability Benchmark
 
+[![Static Analyzer Baselines](https://github.com/mzunain/sc-audit-benchmark/actions/workflows/static-analyzers.yml/badge.svg)](https://github.com/mzunain/sc-audit-benchmark/actions/workflows/static-analyzers.yml)
+[![License: MIT](https://img.shields.io/github/license/mzunain/sc-audit-benchmark)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/mzunain/sc-audit-benchmark)](https://github.com/mzunain/sc-audit-benchmark/releases)
+[![GitHub stars](https://img.shields.io/github/stars/mzunain/sc-audit-benchmark?style=social)](https://github.com/mzunain/sc-audit-benchmark/stargazers)
+
 A self-renewing benchmark for evaluating LLM performance at detecting smart
 contract vulnerabilities, usable by audit firms, researchers, and model teams
 to compare their own LLMs on reproducible Solidity security tasks.
@@ -11,6 +16,8 @@ truth, and publish cost-adjusted results.
 
 **Live demo:** [sc-audit-benchmark.vercel.app](https://sc-audit-benchmark.vercel.app/)
 
+- [Methodology](METHODOLOGY.md) — generation, scanning, judging, scoring, and limitations
+- [v1.0.0 benchmark report](reports/v1.0.0-benchmark-report.md) — quotable results snapshot and audit-firm implications
 - [Leaderboard](https://sc-audit-benchmark.vercel.app/) — cost-adjusted and pure-quality views
 - [Why these results](https://sc-audit-benchmark.vercel.app/analysis) — per-SWC rationale: which models passed, which failed, and the architectural reason behind the split
 - [Per-vuln breakdown](https://sc-audit-benchmark.vercel.app/breakdown) — heatmap of detection rate by model × SWC class
@@ -64,6 +71,19 @@ Good community extensions include:
 1. **GENERATOR**: LLM injects known vulnerabilities into clean Solidity contracts
 2. **SCANNER**: Multiple LLMs try to find the vulnerabilities
 3. **JUDGE**: LLM grades the scanner outputs against ground truth
+
+```mermaid
+flowchart LR
+    A["Contract templates"] --> B["Generator LLM"]
+    B --> C["Fresh vulnerable contracts"]
+    B --> D["Ground truth metadata"]
+    C --> E["Scanner models"]
+    D --> F["Judge LLM"]
+    E --> F
+    F --> G["Scored reports"]
+    G --> H["Leaderboard JSON"]
+    G --> I["Dashboard + benchmark report"]
+```
 
 This resists training-data overfitting because the test set is generated fresh
 each run, not stored in a public dataset.
@@ -141,6 +161,50 @@ python src/main.py
 # Re-run without regenerating contracts
 python src/main.py --skip-generation
 ```
+
+### Reproduce the Published v1.0.0 Results
+
+The published leaderboard was generated from 15 contracts and the default
+three-scanner lineup. To reproduce the same benchmark shape:
+
+```bash
+./run.sh --prepare-only
+source .venv/bin/activate
+python src/main.py
+```
+
+Expected primary artifact:
+
+```bash
+cat output/leaderboard.json
+```
+
+The checked-in v1.0.0 snapshot reports:
+
+| Model | Detection | Quality | Cost (15 scans) | Cost-adjusted |
+|---|---:|---:|---:|---:|
+| Qwen3-Coder 480B | 71.4% | 57.5 | $0.0034 | 17,041.6 |
+| MiniMax M2.7 | 64.3% | 44.6 | $0.0237 | 1,882.4 |
+| Step-3.5-Flash | 18.2% | 18.2 | $0.0357 | 508.8 |
+
+Exact percentages can move when you regenerate contracts because the benchmark
+is intentionally self-renewing. The stored artifacts in `output/` and
+`dashboard/public/data/` preserve the published v1.0.0 run.
+
+### Run Against Your Own Model
+
+Use `--scanner-models` to compare any supported provider/model against the same
+generated contracts and judge rubric:
+
+```bash
+python src/main.py --scanner-models \
+  "nim:qwen/qwen3-coder-480b-a35b-instruct" \
+  "openai/gpt-4o-mini"
+```
+
+Provider routing lives in `src/pipeline/llm_client.py`. Models prefixed with
+`nim:` use NVIDIA NIM; other identifiers use OpenRouter by default. Add pricing
+metadata there when you want cost-adjusted scores to reflect commercial rates.
 
 ## Dashboard
 
@@ -307,3 +371,12 @@ For audit firms (like SC Audit Studio), this benchmark enables:
 EVMBench (OpenAI) uses fixed datasets. We generate fresh contracts each run.
 Plus we factor commercial cost into the final score across multiple vendors,
 including open-weight models that audit firms could self-host.
+
+| Capability | This benchmark | EVMBench |
+|---|---|---|
+| Fresh generated contracts | Yes, each benchmark run can regenerate cases | Fixed dataset orientation |
+| Ground-truth metadata | Stored per generated contract | Dataset-defined |
+| Cost-adjusted scoring | Yes, commercial list-price adjusted | Not the primary focus |
+| Run your own scanner model | Yes, through CLI model routing | Depends on harness integration |
+| Static analyzer comparators | Slither, Aderyn, and heuristic baseline support | Not the core differentiator |
+| Hosted dashboard | Yes, with leaderboard, proof lab, and playground | Research benchmark focus |
