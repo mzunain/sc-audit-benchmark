@@ -1,8 +1,13 @@
 # Generative Solidity Vulnerability Benchmark
 
 A self-renewing benchmark for evaluating LLM performance at detecting smart
-contract vulnerabilities. Built for SC Audit Studio at That Crypto Hackathon
-(Turku, May 2026).
+contract vulnerabilities, usable by audit firms, researchers, and model teams
+to compare their own LLMs on reproducible Solidity security tasks.
+
+Originally built for SC Audit Studio at That Crypto Hackathon (Turku, May 2026),
+the project is structured as reusable benchmark infrastructure: generate fresh
+vulnerable contracts, scan them with any supported model, judge against ground
+truth, and publish cost-adjusted results.
 
 **Live demo:** [sc-audit-benchmark.vercel.app](https://sc-audit-benchmark.vercel.app/)
 
@@ -38,6 +43,21 @@ token usage — i.e., what an audit firm deploying these in production would pay
 
 See [DEMO.md](DEMO.md) for the 5-minute demo flow and [SLIDES.md](SLIDES.md) for
 the deck content.
+
+## Use It As Infrastructure
+
+Run the benchmark against the included open-weight model lineup, or point it at
+your own model provider through the scanner CLI options. The output artifacts are
+plain JSON, so teams can plug the benchmark into CI, dashboards, model selection
+reports, or recurring regression checks.
+
+Good community extensions include:
+
+- adding new SWC categories and contract templates
+- benchmarking additional open-weight or frontier models
+- improving judge prompts and scoring calibration
+- adding static analyzer comparators
+- publishing independent leaderboard runs
 
 ## How It Works (3-Stage Pipeline)
 
